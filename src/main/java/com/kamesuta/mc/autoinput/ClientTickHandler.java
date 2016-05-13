@@ -29,7 +29,6 @@ public class ClientTickHandler {
 	public void onClientTick(TickEvent.ClientTickEvent event) {
 		if (event.phase == TickEvent.Phase.START) {
 			this.minecraft.mcProfiler.startSection("autoclick");
-//			if (this.minecraft.currentScreen == null || this.minecraft.currentScreen.allowUserInput)
 				if (rightclick) {
 					KeyBinding.onTick(1 - 100);
 				}
@@ -40,7 +39,8 @@ public class ClientTickHandler {
 	@SubscribeEvent
 	public void onClinentTick(TickEvent.ClientTickEvent event){
 		if (event.phase == TickEvent.Phase.START) {
-			this.minecraft.mcProfiler.startSection("leftclick");
+			this.minecraft.mcProfiler.startSection("autoclick");
+			if (this.minecraft.currentScreen == null || this.minecraft.currentScreen.allowUserInput)
 				if (leftclick) {
 					KeyBinding.setKeyBindState(1 - 101, true);
 				} else {
