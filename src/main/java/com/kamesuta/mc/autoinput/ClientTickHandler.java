@@ -1,16 +1,23 @@
 package com.kamesuta.mc.autoinput;
 
+import java.util.HashSet;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 
 public class ClientTickHandler {
 	public static final ClientTickHandler INSTANCE = new ClientTickHandler();
 
+	public static HashSet<Integer> keys;
 	public static boolean rightclick = false;
-	public static boolean leftclick = false;
+
+	static {
+		keys = new HashSet<Integer>();
+		keys.add(1-100);
+		keys.add(0-100);//keys.remove(1-100);
+	}
 
 	private final Minecraft minecraft = Minecraft.getMinecraft();
 
@@ -18,36 +25,25 @@ public class ClientTickHandler {
 	}
 
 	@SubscribeEvent
-	public void onClientConnect(FMLNetworkEvent.ClientConnectedToServerEvent event) {
-	}
-
-	@SubscribeEvent
-	public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
-	}
-
-	@SubscribeEvent
 	public void onClientTick(TickEvent.ClientTickEvent event) {
 		if (event.phase == TickEvent.Phase.START) {
 			this.minecraft.mcProfiler.startSection("autoclick");
-				if (rightclick) {
+				if (rightclick)
 					KeyBinding.onTick(1 - 100);
-				}
 			this.minecraft.mcProfiler.endSection();
 		}
 	}
 
-	@SubscribeEvent
-	public void onClinentTick(TickEvent.ClientTickEvent event){
-		if (event.phase == TickEvent.Phase.START) {
-			this.minecraft.mcProfiler.startSection("autoclick");
-			if (this.minecraft.currentScreen == null || this.minecraft.currentScreen.allowUserInput)
-				if (leftclick) {
-					KeyBinding.setKeyBindState(1 - 101, true);
-				} else {
-					KeyBinding.setKeyBindState(1 - 101, false);
-				}
-			this.minecraft.mcProfiler.endSection();
-
-		}
-	}
+//	@SubscribeEvent
+//	public void onClientTick(TickEvent.ClientTickEvent event) {
+//		if (event.phase == TickEvent.Phase.START) {
+//			this.minecraft.mcProfiler.startSection("autoclick");
+//				if (rightclick) {
+//					for (Integer i : keys) {
+//						KeyBinding.onTick(i);
+//					}
+//				}
+//			this.minecraft.mcProfiler.endSection();
+//		}
+//	}
 }

@@ -10,7 +10,7 @@ import net.minecraft.client.settings.KeyBinding;
 public class InputHandler {
 	public static final InputHandler INSTANCE = new InputHandler();
 
-//	private static final KeyBinding KEY_BINDING_GUI = new KeyBinding("autoinputmod.key.gui", Keyboard.KEY_L,
+//	private static final KeyBinding KEY_BINDI]NG_GUI = new KeyBinding("autoinputmod.key.gui", Keyboard.KEY_L,
 //			"autoinputmod.key.category");
 	private static final KeyBinding KEY_BINDING_SWITCH_1 = new KeyBinding("autoinputmod.key.rightclick", Keyboard.KEY_K,
 			"autoinputmod.key.category");
@@ -36,7 +36,12 @@ public class InputHandler {
 	public void LeftInput(InputEvent event) {
 		if (this.minecraft.currentScreen == null){
 			if (KEY_BINDING_SWITCH_2.isPressed()){
-				ClientTickHandler.leftclick = !ClientTickHandler.leftclick;
+//				ClientTickHandler.leftclick = !ClientTickHandler.leftclick;
+//				if (ClientTickHandler.leftclick) {
+					KeyBinding.setKeyBindState(1 - 101, true);
+//				} else {
+//					KeyBinding.setKeyBindState(1 - 101, false);
+//				}
 			}
 		}
 	}
