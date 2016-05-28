@@ -16,7 +16,8 @@ public class ClientTickHandler {
 	static {
 		keys = new HashSet<Integer>();
 		keys.add(1-100);
-		keys.add(0-100);//keys.remove(1-100);
+		keys.add(100-58);
+		//		keys.add(0-100);//keys.remove(1-100);
 	}
 
 	private final Minecraft minecraft = Minecraft.getMinecraft();
@@ -25,25 +26,24 @@ public class ClientTickHandler {
 	}
 
 	@SubscribeEvent
-	public void onClientTick(TickEvent.ClientTickEvent event) {
+	public void onClientTick(final TickEvent.ClientTickEvent event) {
 		if (event.phase == TickEvent.Phase.START) {
 			this.minecraft.mcProfiler.startSection("autoclick");
-				if (rightclick)
-					KeyBinding.onTick(1 - 100);
+			if (rightclick)
+				KeyBinding.onTick(1 - 100);
 			this.minecraft.mcProfiler.endSection();
 		}
 	}
-
-//	@SubscribeEvent
-//	public void onClientTick(TickEvent.ClientTickEvent event) {
-//		if (event.phase == TickEvent.Phase.START) {
-//			this.minecraft.mcProfiler.startSection("autoclick");
-//				if (rightclick) {
-//					for (Integer i : keys) {
-//						KeyBinding.onTick(i);
-//					}
-//				}
-//			this.minecraft.mcProfiler.endSection();
-//		}
-//	}
+	//	@SubscribeEvent
+	//	public void onClientTick(TickEvent.ClientTickEvent event) {
+	//		if (event.phase == TickEvent.Phase.START) {
+	//			this.minecraft.mcProfiler.startSection("autoclick");
+	//				if (rightclick) {
+	//					for (Integer i : keys) {
+	//						KeyBinding.onTick(i);
+	//					}
+	//				}
+	//			this.minecraft.mcProfiler.endSection();
+	//		}
+	//	}
 }
