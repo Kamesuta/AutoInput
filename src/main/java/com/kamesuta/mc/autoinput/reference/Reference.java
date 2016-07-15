@@ -1,4 +1,4 @@
-package com.kamesuta.mc.autoinput;
+package com.kamesuta.mc.autoinput.reference;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

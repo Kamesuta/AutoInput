@@ -1,4 +1,7 @@
 autoinputmod.key.category=AutoInput
 
-autoinputmod.key.rightclick=右クリック連打
-autoinputmod.key.leftclik=左クリック長押し
+autoinputmod.key.gui=GUIを開く
+autoinputmod.key.switch1=右クリック連打
+autoinputmod.key.switch2=左クリック長押し
+
+autoinputmod.gui.title=AutoInput

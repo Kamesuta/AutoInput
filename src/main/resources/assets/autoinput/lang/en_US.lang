@@ -1,4 +1,6 @@
 autoinputmod.key.category=AutoInput
 
-autoinputmod.key.rightclick=Hold right-click
-autoinputmod.key.leftclik=Toggle Continuous left-click
+autoinputmod.key.switch1=Hold right-click
+autoinputmod.key.switch2=Toggle Continuous left-click
+
+autoinputmod.gui.title=AutoInput
