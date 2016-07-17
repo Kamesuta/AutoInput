@@ -16,20 +16,22 @@ import com.kamesuta.mc.guiwidget.position.RelativeSizedPosition;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
 
 public class InputGui {
 	public static void gui() {
 		Minecraft.getMinecraft().displayGuiScreen(new GuiFrame() {
 			@Override
 			protected void initWidgets() {
-				//				final GuiPanel p = new GuiPanel(new RelativePosition(40, 20, -40, -30)) {
 				final Minecraft mc = Minecraft.getMinecraft();
 				final ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 				final int rwidth = res.getScaledWidth();
 				final int rheight = res.getScaledHeight();
-				final int relativeWidth = 200;
-				final int relativeHeight = 170;
-				final GuiPanel p = new GuiPanel(new RelativeSizedPosition((rwidth/(mc.displayWidth/(mc.displayWidth/2))-((rwidth/(mc.displayWidth/2)+relativeWidth)/2)), (rheight/(mc.displayHeight/(mc.displayHeight/2))-((rheight/(mc.displayHeight/2)+relativeHeight)/2)), rwidth/(mc.displayWidth/2)+relativeWidth, rheight/(mc.displayHeight/2)+relativeHeight)) {
+				final int absoluteWidth = 190;
+				final int absoluteHeight = 172;
+				final GuiPanel p = new GuiPanel(new RelativeSizedPosition(rwidth/2-((rwidth/(mc.displayWidth/2)+absoluteWidth)/2), rheight/2-((rheight/(mc.displayHeight/2)+absoluteHeight)/2), rwidth/(mc.displayWidth/2)+absoluteWidth, rheight/(mc.displayHeight/2)+absoluteHeight)) {
 					@Override
 					public void draw(final GuiTools tools, final GuiPosition pgp, final Point p, final float frame) {
 						final GuiPosition gp = pgp.child(this.position);
@@ -51,13 +53,12 @@ public class InputGui {
 					}
 				};
 				final GuiComponent c1 = new CTitle(new RelativePosition(5, 5, -5, 25), I18n.format(Names.Gui.TITLE), 0xffffff) {};
-				final GuiComponent c2 = new CButton(new RelativePosition(5, 35, -5, 55), null) {
-					private boolean switchMode;
+				final GuiComponent c2 = new CButton(new RelativePosition(5, 30, -5, 50), I18n.format(Names.Gui.SIWTCH_1)) {
 					private final String switchNames[] = new String[] {I18n.format(Names.Gui.SIWTCH_1), I18n.format(Names.Gui.SIWTCH_2)};
 
 					@Override
 					public String getName() {
-						return this.switchNames[this.switchMode ? 0 : 1];
+						return this.switchNames[InputHandler.switchMode ? 0 : 1];
 					}
 
 					@Override
@@ -74,17 +75,42 @@ public class InputGui {
 
 					private void onClicked(final int button) {
 						if (button == 0) {
-							this.switchMode = !this.switchMode;
-							ClientTickHandler.rightclick = this.switchMode;
+							InputHandler.switchMode = !InputHandler.switchMode;
 						}
 					}
 				};
-				final GuiComponent c99999999 = new CButton(new RelativePosition(75, 153, -75, 168), I18n.format(Names.Gui.DONE)) {
+
+				final GuiComponent c3 = new CButton(new RelativePosition (60, 125, -60, 145), I18n.format(Names.Gui.OPTIONS)) {
 					@Override
 					public void mouseClicked(final GuiTools tools, final GuiPosition pgp, final Point p, final int button) {
 						final GuiPosition gp = pgp.child(this.rp);
 						final IPositionAbsolute abs = gp.getAbsolute();
 						if (abs.pointInside(p)) {
+							onClicked(button);
+						}
+					}
+
+					private void onClicked(final int button) {
+						if (button == 0) {
+							final EntityPlayer player = mc.thePlayer;
+							player.addChatComponentMessage(new ChatComponentTranslation(EnumChatFormatting.RED + I18n.format(Names.Gui.OPTIONS)));
+							mc.displayGuiScreen(null);
+						}
+					}
+				};
+
+				final GuiComponent c4 = new CButton(new RelativePosition(70, 150, -70, 170), I18n.format(Names.Gui.DONE)) {
+					@Override
+					public void mouseClicked(final GuiTools tools, final GuiPosition pgp, final Point p, final int button) {
+						final GuiPosition gp = pgp.child(this.rp);
+						final IPositionAbsolute abs = gp.getAbsolute();
+						if (abs.pointInside(p)) {
+							onClicked(button);
+						}
+					}
+
+					private void onClicked(final int button) {
+						if (button == 0) {
 							final Minecraft mc = Minecraft.getMinecraft();
 							mc.displayGuiScreen(null);
 						}
@@ -92,7 +118,8 @@ public class InputGui {
 				};
 				p.add(c1);
 				p.add(c2);
-				p.add(c99999999);
+				p.add(c3);
+				p.add(c4);
 				add(p);
 			}
 		});
