@@ -80,7 +80,54 @@ public class InputGui {
 					}
 				};
 
-				final GuiComponent c3 = new CButton(new RelativePosition (60, 125, -60, 145), I18n.format(Names.Gui.OPTIONS)) {
+				final GuiComponent c3 = new CButton(new RelativePosition(5, 55, -5, 75), I18n.format(Names.Gui.NONE)){
+					private boolean receptionMode = false;
+
+					@Override
+					public String getName() {
+						if (this.receptionMode){
+							return EnumChatFormatting.WHITE + "> " + EnumChatFormatting.YELLOW + InputHandler.displayString + EnumChatFormatting.WHITE + " <";
+						} else {
+							return InputHandler.displayString;
+						}
+					}
+					@Override
+					public void mouseClicked(final GuiTools tools, final GuiPosition pgp, final Point p, final int button) {
+						final GuiPosition gp = pgp.child(this.rp);
+						final IPositionAbsolute abs = gp.getAbsolute();
+						if (abs.pointInside(p)) {
+							if (button == 0) {
+								onLeftClicked(button);
+							} else {
+								onClicked(button);
+							}
+						}
+					}
+
+					@Override
+					public void keyTyped(final GuiTools tools, final GuiPosition pgp, final Point mouse, final char c, final int keycode) {
+						final GuiPosition gp = pgp.child(this.rp);
+						final IPositionAbsolute abs = gp.getAbsolute();
+						this.receptionMode = false;
+						InputHandler.displayString = String.valueOf(keycode);
+					}
+
+					private void onLeftClicked(final int button) {
+						if (this.receptionMode){
+							InputHandler.displayString = String.valueOf(button);
+							this.receptionMode = false;
+						} else {
+							this.receptionMode = true;
+						}
+					}
+
+					private void onClicked(final int button) {
+						this.receptionMode = false;
+						InputHandler.displayString = String.valueOf(button);
+					}
+				};
+
+				final GuiComponent c33 = new CButton(new RelativePosition (60, 125, -60, 145), I18n.format(Names.Gui.OPTIONS)) {
 					@Override
 					public void mouseClicked(final GuiTools tools, final GuiPosition pgp, final Point p, final int button) {
 						final GuiPosition gp = pgp.child(this.rp);
@@ -93,13 +140,13 @@ public class InputGui {
 					private void onClicked(final int button) {
 						if (button == 0) {
 							final EntityPlayer player = mc.thePlayer;
-							player.addChatComponentMessage(new ChatComponentTranslation(EnumChatFormatting.RED + I18n.format(Names.Gui.OPTIONS)));
+							player.addChatComponentMessage(new ChatComponentTranslation(EnumChatFormatting.RED + I18n.format(Names.Gui.OPTIONTEXT)));
 							mc.displayGuiScreen(null);
 						}
 					}
 				};
 
-				final GuiComponent c4 = new CButton(new RelativePosition(70, 150, -70, 170), I18n.format(Names.Gui.DONE)) {
+				final GuiComponent c44 = new CButton(new RelativePosition(70, 150, -70, 170), I18n.format(Names.Gui.DONE)) {
 					@Override
 					public void mouseClicked(final GuiTools tools, final GuiPosition pgp, final Point p, final int button) {
 						final GuiPosition gp = pgp.child(this.rp);
@@ -119,7 +166,8 @@ public class InputGui {
 				p.add(c1);
 				p.add(c2);
 				p.add(c3);
-				p.add(c4);
+				p.add(c33);
+				p.add(c44);
 				add(p);
 			}
 		});
