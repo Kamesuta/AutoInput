@@ -2,6 +2,9 @@ package com.kamesuta.mc.autoinput;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+
 import com.kamesuta.mc.autoinput.reference.Names;
 import com.kamesuta.mc.guiwidget.GuiComponent;
 import com.kamesuta.mc.guiwidget.GuiFrame;
@@ -80,12 +83,11 @@ public class InputGui {
 					}
 				};
 
-				final GuiComponent c3 = new CButton(new RelativePosition(5, 55, -5, 75), I18n.format(Names.Gui.NONE)){
-					private boolean receptionMode = false;
+				final GuiComponent c3 = new CButton(new RelativePosition(5, 55, -5, 75), null){
 
 					@Override
 					public String getName() {
-						if (this.receptionMode){
+						if (InputHandler.receptionMode){
 							return EnumChatFormatting.WHITE + "> " + EnumChatFormatting.YELLOW + InputHandler.displayString + EnumChatFormatting.WHITE + " <";
 						} else {
 							return InputHandler.displayString;
@@ -98,32 +100,33 @@ public class InputGui {
 						if (abs.pointInside(p)) {
 							if (button == 0) {
 								onLeftClicked(button);
-							} else {
-								onClicked(button);
+							} else if (InputHandler.receptionMode) {
+								InputHandler.displayString = Mouse.getButtonName(button);
+								InputHandler.receptionMode = false;
 							}
 						}
 					}
 
 					@Override
-					public void keyTyped(final GuiTools tools, final GuiPosition pgp, final Point mouse, final char c, final int keycode) {
+					public void keyTyped(final GuiTools tools, final GuiPosition pgp, final Point mouse, final char c, int keycode) {
 						final GuiPosition gp = pgp.child(this.rp);
 						final IPositionAbsolute abs = gp.getAbsolute();
-						this.receptionMode = false;
-						InputHandler.displayString = String.valueOf(keycode);
-					}
-
-					private void onLeftClicked(final int button) {
-						if (this.receptionMode){
-							InputHandler.displayString = String.valueOf(button);
-							this.receptionMode = false;
-						} else {
-							this.receptionMode = true;
+						if (InputHandler.receptionMode){
+							if (keycode == 1){
+								keycode = 0;
+							}
+							InputHandler.displayString = Keyboard.getKeyName(keycode);
+							InputHandler.receptionMode = false;
 						}
 					}
 
-					private void onClicked(final int button) {
-						this.receptionMode = false;
-						InputHandler.displayString = String.valueOf(button);
+					private void onLeftClicked(final int button) {
+						if (InputHandler.receptionMode){
+							InputHandler.displayString = Mouse.getButtonName(button);
+							InputHandler.receptionMode = false;
+						} else {
+							InputHandler.receptionMode = true;
+						}
 					}
 				};
 
@@ -170,6 +173,15 @@ public class InputGui {
 				p.add(c44);
 				add(p);
 			}
+
+			@Override
+			public boolean isClosable() {
+				if (InputHandler.receptionMode) {
+					return false;
+				} else {
+					return true;
+				}
+			};
 		});
 	}
 }

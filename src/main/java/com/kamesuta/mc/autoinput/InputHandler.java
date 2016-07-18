@@ -7,14 +7,15 @@ import com.kamesuta.mc.autoinput.reference.Names;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 
 public class InputHandler {
 	public static final InputHandler INSTANCE = new InputHandler();
 
 	public static boolean switchMode = true;
-	public static String displayString = I18n.format(Names.Gui.NONE);
+	public static boolean receptionMode = false;
+
+	public static String displayString = Keyboard.getKeyName(0);
 	public static int keyCode;
 
 	private static final KeyBinding KEY_BINDING_GUI = new KeyBinding(Names.Keys.GUI, Keyboard.KEY_L, Names.Keys.CATEGORY);
