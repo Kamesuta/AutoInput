@@ -2,7 +2,6 @@ package com.kamesuta.mc.autoinput;
 
 import org.lwjgl.input.Keyboard;
 
-import com.kamesuta.mc.autoinput.gui.InputGui;
 import com.kamesuta.mc.autoinput.reference.Names;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;

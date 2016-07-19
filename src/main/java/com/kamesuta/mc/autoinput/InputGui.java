@@ -1,8 +1,10 @@
-package com.kamesuta.mc.autoinput.gui;
+package com.kamesuta.mc.autoinput;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import com.kamesuta.mc.autoinput.InputHandler;
+import com.kamesuta.mc.autoinput.guiwidgets.CButton;
+import com.kamesuta.mc.autoinput.guiwidgets.CKeyButton;
+import com.kamesuta.mc.autoinput.guiwidgets.CTitle;
 import com.kamesuta.mc.autoinput.reference.Names;
 import com.kamesuta.mc.guiwidget.GuiCommon;
 import com.kamesuta.mc.guiwidget.GuiComponent;

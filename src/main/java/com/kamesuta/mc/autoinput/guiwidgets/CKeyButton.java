@@ -1,4 +1,4 @@
-package com.kamesuta.mc.autoinput.gui;
+package com.kamesuta.mc.autoinput.guiwidgets;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -16,6 +16,14 @@ public class CKeyButton extends CButton{
 
 	private static boolean receptionMode = false;
 	private String displayString = Keyboard.getKeyName(0);
+
+	public static boolean getReceptionMode() {
+		return receptionMode;
+	}
+
+	public static void setReceptionMode(final boolean receptionMode) {
+		CKeyButton.receptionMode = receptionMode;
+	}
 
 	public CKeyButton(final RelativePosition rp, final String name) {
 		super(rp, name);
@@ -38,12 +46,18 @@ public class CKeyButton extends CButton{
 			return this.displayString;
 		}
 	}
+
 	@Override
 	public void mouseClicked(final GuiTools tools, final GuiPosition pgp, final Point p, final int button) {
 		final GuiPosition gp = pgp.child(this.rp);
 		final IPositionAbsolute abs = gp.getAbsolute();
 		if (abs.pointInside(p)) {
-			onClicked(button);
+			if (receptionMode) {
+				InputHandler.setKeyCode(button -100);
+				receptionMode = false;
+			} else if (button == 0) {
+				receptionMode = true;
+			}
 		}
 	}
 
@@ -59,22 +73,5 @@ public class CKeyButton extends CButton{
 				InputHandler.setKeyCode(keycode);
 			}
 		}
-	}
-
-	private void onClicked(final int button) {
-		if (receptionMode) {
-			InputHandler.setKeyCode(button -100);
-			receptionMode = false;
-		} else if (button == 0) {
-			receptionMode = true;
-		}
-	}
-
-	public static boolean getReceptionMode() {
-		return receptionMode;
-	}
-
-	public static void setReceptionMode(final boolean receptionMode) {
-		CKeyButton.receptionMode = receptionMode;
 	}
 }
