@@ -7,7 +7,7 @@ import com.kamesuta.mc.guiwidget.position.IPositionRelative;
 import com.kamesuta.mc.guiwidget.position.Point;
 
 public class GuiPanel extends GuiComponent implements GuiContainer {
-	private final ArrayList<GuiCommon> widgets = new ArrayList<GuiCommon>();
+	protected final ArrayList<GuiCommon> widgets = new ArrayList<GuiCommon>();
 	protected IPositionRelative position;
 
 	public GuiPanel(final IPositionRelative position) {

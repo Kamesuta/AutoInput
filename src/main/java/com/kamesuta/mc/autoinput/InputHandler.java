@@ -2,6 +2,7 @@ package com.kamesuta.mc.autoinput;
 
 import org.lwjgl.input.Keyboard;
 
+import com.kamesuta.mc.autoinput.gui.InputGui;
 import com.kamesuta.mc.autoinput.reference.Names;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -13,10 +14,15 @@ public class InputHandler {
 	public static final InputHandler INSTANCE = new InputHandler();
 
 	public static boolean switchMode = true;
-	public static boolean receptionMode = false;
+	protected static int keyCode = 0;
 
-	public static String displayString = Keyboard.getKeyName(0);
-	public static int keyCode;
+	public static int getKeyCode() {
+		return keyCode;
+	}
+
+	public static void setKeyCode(final int keyCode) {
+		InputHandler.keyCode = keyCode;
+	}
 
 	private static final KeyBinding KEY_BINDING_GUI = new KeyBinding(Names.Keys.GUI, Keyboard.KEY_L, Names.Keys.CATEGORY);
 	private static final KeyBinding KEY_BINDING_TOGGLE = new KeyBinding(Names.Keys.TOGGLE, Keyboard.KEY_K, Names.Keys.CATEGORY);
