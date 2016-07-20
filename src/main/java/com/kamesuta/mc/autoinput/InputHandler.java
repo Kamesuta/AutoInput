@@ -12,17 +12,6 @@ import net.minecraft.client.settings.KeyBinding;
 public class InputHandler {
 	public static final InputHandler INSTANCE = new InputHandler();
 
-	public static boolean switchMode = true;
-	protected static int keyCode = 0;
-
-	public static int getKeyCode() {
-		return keyCode;
-	}
-
-	public static void setKeyCode(final int keyCode) {
-		InputHandler.keyCode = keyCode;
-	}
-
 	private static final KeyBinding KEY_BINDING_GUI = new KeyBinding(Names.Keys.GUI, Keyboard.KEY_L, Names.Keys.CATEGORY);
 	private static final KeyBinding KEY_BINDING_TOGGLE = new KeyBinding(Names.Keys.TOGGLE, Keyboard.KEY_K, Names.Keys.CATEGORY);
 
@@ -37,7 +26,7 @@ public class InputHandler {
 	public void onKeyInput(final InputEvent event) {
 		if (this.minecraft.currentScreen == null) {
 			if (KEY_BINDING_GUI.isPressed()) {
-				InputGui.gui();
+				Minecraft.getMinecraft().displayGuiScreen(new GuiAutoInput());
 			}
 		}
 	}

@@ -37,7 +37,6 @@ public class GuiPanel extends GuiComponent implements GuiContainer {
 	@Override
 	public void draw(final GuiTools tools, final GuiPosition pgp, final Point p, final float frame) {
 		final GuiPosition gp = pgp.child(this.position);
-		tools.drawDebug(gp);
 		for (final GuiCommon widget : this.widgets)
 			widget.draw(tools, gp, p, frame);
 	}

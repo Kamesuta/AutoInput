@@ -9,7 +9,7 @@ import com.kamesuta.mc.guiwidget.position.IPositionAbsolute;
 import com.kamesuta.mc.guiwidget.position.Point;
 import com.kamesuta.mc.guiwidget.position.RelativePosition;
 
-class CText extends GuiComponent {
+public class CText extends GuiComponent {
 	protected RelativePosition rp;
 	protected String name;
 	public CText(final RelativePosition rp, final String name) {

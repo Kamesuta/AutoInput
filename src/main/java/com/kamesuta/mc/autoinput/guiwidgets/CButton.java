@@ -6,15 +6,19 @@ import com.kamesuta.mc.guiwidget.GuiComponent;
 import com.kamesuta.mc.guiwidget.GuiPosition;
 import com.kamesuta.mc.guiwidget.GuiTools;
 import com.kamesuta.mc.guiwidget.position.IPositionAbsolute;
+import com.kamesuta.mc.guiwidget.position.IPositionRelative;
 import com.kamesuta.mc.guiwidget.position.Point;
-import com.kamesuta.mc.guiwidget.position.RelativePosition;
 
 public class CButton extends GuiComponent {
-	protected RelativePosition rp;
+	protected IPositionRelative rp;
 	protected String name;
-	public CButton(final RelativePosition rp, final String name) {
-		this.rp = rp;
+
+	public CButton(final IPositionRelative rp2, final String name) {
+		this.rp = rp2;
 		this.name = name;
+	}
+	public CButton(final IPositionRelative rp2) {
+		this(rp2, "");
 	}
 
 	@Override

@@ -1,7 +1,5 @@
 package com.kamesuta.mc.autoinput;
 
-import java.util.HashSet;
-
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.client.Minecraft;
@@ -10,15 +8,14 @@ import net.minecraft.client.settings.KeyBinding;
 public class ClientTickHandler {
 	public static final ClientTickHandler INSTANCE = new ClientTickHandler();
 
-	public static HashSet<Integer> keys;
 	public static boolean rightclick = false;
 
-	static {
-		keys = new HashSet<Integer>();
-		keys.add(1-100);
-		keys.add(100-58);
-		//		keys.add(0-100);//keys.remove(1-100);
-	}
+	//	static {
+	//		keys = new HashSet<Integer>();
+	//		keys.add(1-100);
+	//		keys.add(100-58);
+	//		//		keys.add(0-100);//keys.remove(1-100);
+	//	}
 
 	private final Minecraft minecraft = Minecraft.getMinecraft();
 

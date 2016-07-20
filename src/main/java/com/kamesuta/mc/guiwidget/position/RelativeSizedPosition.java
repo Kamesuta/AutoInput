@@ -31,7 +31,7 @@ public class RelativeSizedPosition implements IPositionRelative {
 		final int px2 = parent.x2();
 		final int py2 = parent.y2();
 		final int abs_x1 = (this.x>=0) ? px1+this.x : px2+this.x+1-this.w;
-		final int abs_y1 = (this.x>=0) ? py1+this.y : py2+this.y+1-this.h;
+		final int abs_y1 = (this.y>=0) ? py1+this.y : py2+this.y+1-this.h;
 		final int abs_x2 = (this.x>=0) ? px1+this.x+this.w : px2+this.x+1;
 		final int abs_y2 = (this.y>=0) ? py1+this.y+this.h : py2+this.y+1;
 		final int rx1 = Math.min(abs_x1, abs_x2);

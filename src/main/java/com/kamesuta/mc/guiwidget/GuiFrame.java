@@ -110,8 +110,7 @@ public class GuiFrame extends GuiScreen implements GuiContainer {
 
 	@Override
 	public void keyTyped(final char c, final int keycode) {
-		if (isClosable())
-			super.keyTyped(c, keycode);
+		super.keyTyped(c, keycode);
 		final GuiPosition gp = new GuiPosition(null, this.position, getAbsolute());
 		final Point p = getAbsoluteMousePosition();
 		for (final GuiCommon widget : this.widgets)
@@ -137,10 +136,6 @@ public class GuiFrame extends GuiScreen implements GuiContainer {
 	public Point getAbsoluteMousePosition() {
 		return new Point(Mouse.getX() * this.width / this.mc.displayWidth,
 				this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1);
-	}
-
-	public boolean isClosable() {
-		return true;
 	}
 
 	protected void initWidgets() {
