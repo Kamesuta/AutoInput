@@ -1,7 +1,15 @@
 autoinputmod.key.category=AutoInput
 
 autoinputmod.key.gui=GUIを開く
-autoinputmod.key.switch1=右クリック連打
-autoinputmod.key.switch2=左クリック長押し
+autoinputmod.key.toggle=AutoInputを開始
+autoinputmod.key.leftclick=左クリック
+autoinputmod.key.rightclick=右クリック
+autoinputmod.key.middleclick=中クリック
 
 autoinputmod.gui.title=AutoInput
+autoinputmod.gui.settings=設定
+autoinputmod.gui.switch_hold=連打モード
+autoinputmod.gui.switch_continuous=長押しモード
+autoinputmod.gui.options=オプション
+autoinputmod.gui.notavailable=利用できません
+autoinputmod.gui.done=閉じる

@@ -122,7 +122,7 @@ public class GuiAutoInput extends GuiFrame implements IGuiControllable {
 			}
 		};
 		final GuiComponent c1 = new CTitle(new RelativePosition(5, 5, -5, 25), I18n.format(Names.Gui.TITLE), 0xffffff) {};
-		final GuiComponent c2 = new CText(new RelativePosition(5, 30, -5, 45), "Settings"){};
+		final GuiComponent c2 = new CText(new RelativePosition(5, 30, -5, 45), I18n.format(Names.Gui.SETTINGS)){};
 
 		p.add(c1);
 		p.add(c2);
@@ -132,15 +132,15 @@ public class GuiAutoInput extends GuiFrame implements IGuiControllable {
 			public void draw(final GuiTools tools, final GuiPosition pgp, final Point p, final float frame) {
 				super.draw(tools, pgp, p, frame);
 				final GuiPosition gp = pgp.child(this.position);
-				tools.drawDebug(gp);
+				//				tools.drawDebug(gp);
 			}
 
 			@Override
 			public void mouseScrolled(final GuiTools tools, final GuiPosition pgp, final Point p, final int scroll) {
-				//				final GuiPosition gp = pgp.child(this.position);
-				//				if (gp.position.isVaild()) {
-				GuiAutoInput.this.scrollpanel.y -= scroll/50;
-				//				}
+				final GuiPosition gp = pgp.child(this.position);
+				if (gp.position.isVaild()) {
+					//				GuiAutoInput.this.scrollpanel.y -= scroll/50;
+				}
 			}
 		};
 
@@ -151,7 +151,7 @@ public class GuiAutoInput extends GuiFrame implements IGuiControllable {
 			public void draw(final GuiTools tools, final GuiPosition pgp, final Point p, final float frame) {
 				super.draw(tools, pgp, p, frame);
 				final GuiPosition gp = pgp.child(this.position);
-				tools.drawDebug(gp);
+				//				tools.drawDebug(gp);
 			}
 		};
 		for (final GuiKeyBinding keySwitch : keys) {
@@ -159,11 +159,6 @@ public class GuiAutoInput extends GuiFrame implements IGuiControllable {
 		}
 		keypanels.add(keypanelinner);
 		p.add(keypanels);
-		//		final GuiComponent c5 = new CSwitchButton(new RelativePosition(5, 73, absoluteWidth*2/3 - 5, 93), keys.get(1));
-		//		final GuiComponent c6 = new CKeyButton(new RelativePosition(absoluteWidth*2/3 + 5, 73, -5, 93), keys.get(1), this);
-		//		final GuiComponent c7 = new CSwitchButton(new RelativePosition(5, 96, absoluteWidth*2/3 - 5, 116), keys.get(2));
-		//		final GuiComponent c8 = new CKeyButton(new RelativePosition(absoluteWidth*2/3 + 5, 96, -5, 116), keys.get(2), this);
-
 
 		final GuiComponent c33 = new CButton(new RelativePosition (60, 120, -60, 140), "") {
 			private String displayString = I18n.format(Names.Gui.OPTIONS);
@@ -201,15 +196,11 @@ public class GuiAutoInput extends GuiFrame implements IGuiControllable {
 				if (button == 0) {
 					final Minecraft mc = Minecraft.getMinecraft();
 					mc.getSoundHandler().playSound(PositionedSoundRecord
-							.func_147673_a(new ResourceLocation("random.click")));
+							.func_147673_a(new ResourceLocation("gui.button.press")));
 					mc.displayGuiScreen(null);
 				}
 			}
 		};
-		//		p.add(c5);
-		//		p.add(c6);
-		//		p.add(c7);
-		//		p.add(c8);
 		p.add(c33);
 		p.add(c44);
 		add(p);

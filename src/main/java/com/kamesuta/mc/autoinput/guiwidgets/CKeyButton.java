@@ -94,7 +94,7 @@ public class CKeyButton extends CButton {
 			this.receptionMode = false;
 		} else if (keycode == 1) {
 			final Minecraft mc = Minecraft.getMinecraft();
-			mc.getSoundHandler().playSound(PositionedSoundRecord.func_147673_a(new ResourceLocation("random.click")));
+			mc.getSoundHandler().playSound(PositionedSoundRecord.func_147673_a(new ResourceLocation("gui.button.press")));
 		}
 		this.controllable.setControllable(null);
 	}
