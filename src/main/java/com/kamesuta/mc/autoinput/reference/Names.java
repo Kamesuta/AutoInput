@@ -15,7 +15,7 @@ public class Names {
 		public static final String SIWTCH_1 = "autoinputmod.gui.switch_hold";
 		public static final String SIWTCH_2 = "autoinputmod.gui.switch_continuous";
 		public static final String OPTIONS = "autoinputmod.gui.options";
-		public static String NOTAVAIABLE = "autoinputmod.gui.notavailable";
+		public static final String NOTAVAIABLE = "autoinputmod.gui.notavailable";
 		public static final String DONE = "autoinputmod.gui.done";
 	}
 }
