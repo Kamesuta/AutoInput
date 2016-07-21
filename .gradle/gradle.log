@@ -5,31 +5,16 @@
  R4wk, ZeuX, IngisKahn, bspkrs
  MCP Data version : unknown
 ****************************
-:compileApiJava UP-TO-DATE
-:processApiResources UP-TO-DATE
-:apiClasses UP-TO-DATE
-:sourceMainJava
-:compileJava警告: [options] ブートストラップ・クラスパスが-source 1.6と一緒に設定されていません
-注意:C:\Users\bebe\git\AutoInput\build\sources\java\com\kamesuta\mc\guiwidget\GuiTools.javaは非推奨のAPIを使用またはオーバーライドしています。
-注意:詳細は、-Xlint:deprecationオプションを指定して再コンパイルしてください。
-警告1個
+:help
 
-:processResources
-:classes
-:jar
-:compileTestJava UP-TO-DATE
-:processTestResources UP-TO-DATE
-:testClasses UP-TO-DATE
-:test UP-TO-DATE
-:extractMcpData UP-TO-DATE
-:getVersionJson
-:extractUserDev UP-TO-DATE
-:genSrgs SKIPPED
-:reobf
-:assemble
-:check UP-TO-DATE
-:build
+Welcome to Gradle 2.0.
+
+To run a build, run gradlew <task> ...
+
+To see a list of available tasks, run gradlew tasks
+
+To see a list of command-line options, run gradlew --help
 
 BUILD SUCCESSFUL
 
-Total time: 16.778 secs
+Total time: 24.774 secs
