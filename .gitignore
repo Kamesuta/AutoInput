@@ -1,3 +1,18 @@
-git rm -r --cached .
-git add .
-git commit -m ".gitignore is now working"
+## .gitignore ##
+# ignore all
+*
+*/
+
+# allow any
+!/src
+!/src/
+!/gradle
+!/gradle/
+!/lib
+!/lib/
+!/build.gradle
+!/gradlew
+!/gradlew.bat
+!/install.bat
+!/build.bat
+!/.gitignore
