@@ -1,0 +1,16 @@
+[
+{
+  "modid": "autoinputmod",
+  "name": "AutoInputMod",
+  "description": "Minecraft life come in handy!",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Kamesuta", "sjcl"],
+  "credits": "(c)2016 TeamFruit",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

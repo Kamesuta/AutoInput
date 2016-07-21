@@ -1,37 +1,33 @@
 package com.kamesuta.mc.autoinput;
 
+import java.util.HashSet;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 
 public class ClientTickHandler {
 	public static final ClientTickHandler INSTANCE = new ClientTickHandler();
 
-	public static boolean enableclick = false;
+	protected static boolean continuousInput = false;
 
-	private final Minecraft minecraft = Minecraft.getMinecraft();
+	private final Minecraft mc = Minecraft.getMinecraft();
+
+	protected static final HashSet<Integer> continuousKeys = new HashSet<Integer>();
 
 	private ClientTickHandler() {
 	}
 
 	@SubscribeEvent
-	public void onClientConnect(FMLNetworkEvent.ClientConnectedToServerEvent event) {
-	}
-
-	@SubscribeEvent
-	public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
-	}
-
-	@SubscribeEvent
-	public void onClientTick(TickEvent.ClientTickEvent event) {
+	public void onClientTick(final TickEvent.ClientTickEvent event) {
 		if (event.phase == TickEvent.Phase.START) {
-			this.minecraft.mcProfiler.startSection("autoclick");
-//			if (this.minecraft.currentScreen == null || this.minecraft.currentScreen.allowUserInput)
-				if (enableclick)
-					KeyBinding.onTick(1 - 100);
-			this.minecraft.mcProfiler.endSection();
+			this.mc.mcProfiler.startSection("autoinput");
+			for (final Integer i : continuousKeys) {
+				if (continuousInput)
+					KeyBinding.onTick(i);
+			}
+			this.mc.mcProfiler.endSection();
 		}
 	}
 }

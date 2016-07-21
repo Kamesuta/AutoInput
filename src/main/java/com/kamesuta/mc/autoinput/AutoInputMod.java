@@ -1,5 +1,7 @@
 package com.kamesuta.mc.autoinput;
 
+import com.kamesuta.mc.autoinput.reference.Reference;
+
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
