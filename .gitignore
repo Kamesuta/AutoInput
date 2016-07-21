@@ -17,4 +17,6 @@
 !/build.bat
 !/.gitignore
 
-$ git rm --cached /path/to/file.txt
+git rm -r --cached .
+git add .
+git commit -m ".gitignore is now working"
