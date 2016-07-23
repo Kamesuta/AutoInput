@@ -53,8 +53,6 @@ public class InputHandler {
 				}
 				ClientTickHandler.continuousInput = !ClientTickHandler.continuousInput;
 				holdInput = !holdInput;
-				if (InputHandler.holdInput)
-					KeyBinding.unPressAllKeys();
 			}
 			for (final Integer i : holdKeys) {
 				if (holdInput) {
