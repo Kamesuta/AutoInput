@@ -21,7 +21,7 @@ public class InputHandler {
 	public static final KeyBinding[] KEY_BINDINGS = new KeyBinding[] { KEY_BINDING_GUI, KEY_BINDING_TOGGLE};
 
 	private final Minecraft mc = Minecraft.getMinecraft();
-	protected static boolean holdInput = false;
+	protected static boolean keyInput = false;
 
 	private InputHandler() {
 	}
@@ -30,13 +30,13 @@ public class InputHandler {
 
 	@SubscribeEvent
 	public void onKeyInput(final InputEvent event) {
-		if (this.mc.currentScreen == null) {
-			if (KEY_BINDING_GUI.isPressed())
+		if (KEY_BINDING_GUI.isPressed()) {
+			if (this.mc.currentScreen == null)
 				this.mc.displayGuiScreen(new GuiAutoInput());
 		}
 
 		if (KEY_BINDING_TOGGLE.isPressed()) {
-			if (this.mc.currentScreen == null) {
+			if (!keyInput) {
 				ClientTickHandler.continuousKeys.clear();
 				InputHandler.holdKeys.clear();
 				final Iterator it = GuiAutoInput.keys.iterator();
@@ -51,11 +51,11 @@ public class InputHandler {
 						}
 					}
 				}
-				ClientTickHandler.continuousInput = !ClientTickHandler.continuousInput;
-				holdInput = !holdInput;
 			}
+			if (this.mc.currentScreen == null)
+				keyInput = !keyInput;
 			for (final Integer i : holdKeys) {
-				if (holdInput) {
+				if (keyInput) {
 					KeyBinding.setKeyBindState(i, true);
 				} else {
 					KeyBinding.setKeyBindState(i, false);
