@@ -49,18 +49,21 @@ public class InputHandler {
 						}
 					}
 				}
-				ClientTickHandler.continuousInput = !ClientTickHandler.continuousInput;
-				holdInput = !holdInput;
-				if (ClientTickHandler.continuousInput)
-					KeyBinding.unPressAllKeys();
-				for (final Integer i : holdKeys) {
-					if (holdInput) {
-						KeyBinding.setKeyBindState(i, true);
-					} else {
-						KeyBinding.setKeyBindState(i, false);
-					}
-				}
+			}
+		}
+		ClientTickHandler.continuousInput = !ClientTickHandler.continuousInput;
+		holdInput = !holdInput;
+		if (ClientTickHandler.continuousInput)
+			KeyBinding.unPressAllKeys();
+		for (final Integer i : holdKeys) {
+			if (holdInput) {
+				KeyBinding.setKeyBindState(i, true);
+			} else {
+				KeyBinding.setKeyBindState(i, false);
 			}
 		}
 	}
 }
+
+
+
