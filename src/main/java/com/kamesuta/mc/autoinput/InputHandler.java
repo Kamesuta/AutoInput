@@ -33,8 +33,10 @@ public class InputHandler {
 		if (this.mc.currentScreen == null) {
 			if (KEY_BINDING_GUI.isPressed())
 				this.mc.displayGuiScreen(new GuiAutoInput());
+		}
 
-			if (KEY_BINDING_TOGGLE.isPressed()) {
+		if (KEY_BINDING_TOGGLE.isPressed()) {
+			if (this.mc.currentScreen == null) {
 				ClientTickHandler.continuousKeys.clear();
 				InputHandler.holdKeys.clear();
 				final Iterator it = GuiAutoInput.keys.iterator();
@@ -49,21 +51,18 @@ public class InputHandler {
 						}
 					}
 				}
-				if (ClientTickHandler.continuousInput)
+				ClientTickHandler.continuousInput = !ClientTickHandler.continuousInput;
+				holdInput = !holdInput;
+				if (InputHandler.holdInput)
 					KeyBinding.unPressAllKeys();
 			}
-		}
-		ClientTickHandler.continuousInput = !ClientTickHandler.continuousInput;
-		holdInput = !holdInput;
-		for (final Integer i : holdKeys) {
-			if (holdInput) {
-				KeyBinding.setKeyBindState(i, true);
-			} else {
-				KeyBinding.setKeyBindState(i, false);
+			for (final Integer i : holdKeys) {
+				if (holdInput) {
+					KeyBinding.setKeyBindState(i, true);
+				} else {
+					KeyBinding.setKeyBindState(i, false);
+				}
 			}
 		}
 	}
 }
-
-
-
