@@ -10,8 +10,6 @@ import net.minecraft.client.settings.KeyBinding;
 public class ClientTickHandler {
 	public static final ClientTickHandler INSTANCE = new ClientTickHandler();
 
-	protected static boolean continuousInput = false;
-
 	private final Minecraft mc = Minecraft.getMinecraft();
 
 	protected static final HashSet<Integer> continuousKeys = new HashSet<Integer>();
@@ -21,13 +19,18 @@ public class ClientTickHandler {
 
 	@SubscribeEvent
 	public void onClientTick(final TickEvent.ClientTickEvent event) {
-		if (event.phase == TickEvent.Phase.START) {
-			this.mc.mcProfiler.startSection("autoinput");
-			for (final Integer i : continuousKeys) {
-				if (continuousInput)
+		if (InputHandler.keyInput) {
+			if (event.phase == TickEvent.Phase.START) {
+				this.mc.mcProfiler.startSection("autoinput");
+				for (final Integer i : continuousKeys) {
 					KeyBinding.onTick(i);
+				}
 			}
 			this.mc.mcProfiler.endSection();
+		}
+		if (InputHandler.keyInput && this.mc.currentScreen != null) {
+			for (final Integer i : InputHandler.holdKeys)
+				KeyBinding.setKeyBindState(i, true);
 		}
 	}
 }
