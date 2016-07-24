@@ -58,7 +58,7 @@ public class CKeyButton extends CButton {
 				disp = I18n.format(Names.Keys.KEY2);
 				break;
 			default:
-				disp = Mouse.getButtonName(keyCode + 100);
+				disp = Mouse.getButtonName(keyCode+100);
 			}
 		} else {
 			disp = Keyboard.getKeyName(keyCode);
@@ -76,7 +76,7 @@ public class CKeyButton extends CButton {
 		final GuiPosition gp = pgp.child(this.rp);
 		final IPositionAbsolute abs = gp.getAbsolute();
 		if (this.receptionMode) {
-			getKeyBinding().setKeyCode(-100 + button);
+			getKeyBinding().setKeyCode(-100+button);
 			this.receptionMode = false;
 			this.controllable.setControllable(null);
 		} else if (abs.pointInside(p) && button == 0) {
