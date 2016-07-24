@@ -21,49 +21,45 @@ public class InputHandler {
 	public static final KeyBinding[] KEY_BINDINGS = new KeyBinding[] { KEY_BINDING_GUI, KEY_BINDING_TOGGLE};
 
 	private final Minecraft mc = Minecraft.getMinecraft();
-	protected static boolean holdInput = false;
+	protected static boolean keyInput = false;
 
 	private InputHandler() {
 	}
 
 	protected static final HashSet<Integer> holdKeys = new HashSet<Integer>();
+	protected static final HashSet<Integer> continuousKeys = new HashSet<Integer>();
 
 	@SubscribeEvent
 	public void onKeyInput(final InputEvent event) {
-		if (this.mc.currentScreen == null) {
-			if (KEY_BINDING_GUI.isPressed())
+		if (KEY_BINDING_GUI.isPressed()) {
+			if (this.mc.currentScreen == null)
 				this.mc.displayGuiScreen(new GuiAutoInput());
+		}
 
-			if (KEY_BINDING_TOGGLE.isPressed()) {
-				ClientTickHandler.continuousKeys.clear();
-				InputHandler.holdKeys.clear();
-				final Iterator it = GuiAutoInput.keys.iterator();
-				while (it.hasNext()) {
-					final GuiKeyBinding keyBinding = (GuiKeyBinding) it.next();
-					final int keys = keyBinding.getKeyCode();
-					if (keys != 0) {
-						if (keyBinding.getMode()) {
-							ClientTickHandler.continuousKeys.add(keys);
-						} else {
-							InputHandler.holdKeys.add(keys);
-						}
+		if (KEY_BINDING_TOGGLE.isPressed()) {
+			continuousKeys.clear();
+			holdKeys.clear();
+			final Iterator it = GuiAutoInput.keys.iterator();
+			while (it.hasNext()) {
+				final GuiKeyBinding keyBinding = (GuiKeyBinding) it.next();
+				final int keys = keyBinding.getKeyCode();
+				if (keys != 0) {
+					if (keyBinding.getMode()) {
+						continuousKeys.add(keys);
+					} else {
+						holdKeys.add(keys);
 					}
 				}
-				if (ClientTickHandler.continuousInput)
-					KeyBinding.unPressAllKeys();
 			}
-		}
-		ClientTickHandler.continuousInput = !ClientTickHandler.continuousInput;
-		holdInput = !holdInput;
-		for (final Integer i : holdKeys) {
-			if (holdInput) {
-				KeyBinding.setKeyBindState(i, true);
-			} else {
-				KeyBinding.setKeyBindState(i, false);
+			keyInput = !keyInput;
+
+			for (final Integer i : holdKeys) {
+				if (keyInput) {
+					KeyBinding.setKeyBindState(i, true);
+				} else {
+					KeyBinding.setKeyBindState(i, false);
+				}
 			}
 		}
 	}
 }
-
-
-
