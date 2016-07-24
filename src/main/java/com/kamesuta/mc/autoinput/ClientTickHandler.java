@@ -19,13 +19,18 @@ public class ClientTickHandler {
 
 	@SubscribeEvent
 	public void onClientTick(final TickEvent.ClientTickEvent event) {
-		if (event.phase == TickEvent.Phase.START) {
-			this.mc.mcProfiler.startSection("autoinput");
-			for (final Integer i : continuousKeys) {
-				if (InputHandler.keyInput)
+		if (InputHandler.keyInput) {
+			if (event.phase == TickEvent.Phase.START) {
+				this.mc.mcProfiler.startSection("autoinput");
+				for (final Integer i : continuousKeys) {
 					KeyBinding.onTick(i);
+				}
 			}
 			this.mc.mcProfiler.endSection();
+		}
+		if (InputHandler.keyInput && this.mc.currentScreen != null) {
+			for (final Integer i : InputHandler.holdKeys)
+				KeyBinding.setKeyBindState(i, true);
 		}
 	}
 }
