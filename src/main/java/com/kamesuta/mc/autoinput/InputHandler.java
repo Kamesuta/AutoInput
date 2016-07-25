@@ -18,7 +18,7 @@ public class InputHandler {
 	private static final KeyBinding KEY_BINDING_GUI = new KeyBinding(Names.Keys.GUI, Keyboard.KEY_L, Names.Keys.CATEGORY);
 	private static final KeyBinding KEY_BINDING_TOGGLE = new KeyBinding(Names.Keys.TOGGLE, Keyboard.KEY_K, Names.Keys.CATEGORY);
 
-	public static final KeyBinding[] KEY_BINDINGS = new KeyBinding[] { KEY_BINDING_GUI, KEY_BINDING_TOGGLE};
+	public static final KeyBinding[] KEY_BINDINGS = new KeyBinding[] { KEY_BINDING_GUI, KEY_BINDING_TOGGLE };
 
 	private final Minecraft mc = Minecraft.getMinecraft();
 	protected static boolean keyInput = false;
@@ -51,7 +51,8 @@ public class InputHandler {
 					}
 				}
 			}
-			keyInput = !keyInput;
+			if (this.mc.currentScreen == null)
+				keyInput = !keyInput;
 
 			for (final Integer i : holdKeys) {
 				if (keyInput) {

@@ -89,7 +89,7 @@ public class CKeyButton extends CButton {
 	public void keyTyped(final GuiTools tools, final GuiPosition pgp, final Point mouse, final char c, final int keycode) {
 		final GuiPosition gp = pgp.child(this.rp);
 		final IPositionAbsolute abs = gp.getAbsolute();
-		if (this.receptionMode){
+		if (this.receptionMode) {
 			getKeyBinding().setKeyCode((keycode == 1) ? 0 : keycode);
 			this.receptionMode = false;
 		} else if (keycode == 1) {
