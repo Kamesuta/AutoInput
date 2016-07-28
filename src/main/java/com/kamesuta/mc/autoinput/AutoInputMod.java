@@ -1,5 +1,7 @@
 package com.kamesuta.mc.autoinput;
 
+import java.util.Map;
+
 import com.kamesuta.mc.autoinput.reference.Reference;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -10,7 +12,8 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.network.NetworkCheckHandler;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.client.settings.KeyBinding;
 
 @Mod(modid = Reference.MODID, name = Reference.NAME, version = Reference.VERSION)
@@ -22,25 +25,26 @@ public class AutoInputMod {
 	public static int RenderID;
 
 	@EventHandler
-	public void perInit(FMLPreInitializationEvent event) {
-		for (KeyBinding keyBinding : InputHandler.KEY_BINDINGS) {
+	public void perInit(final FMLPreInitializationEvent event) {
+		Reference.logger = event.getModLog();
+		for (final KeyBinding keyBinding : InputHandler.KEY_BINDINGS) {
 			ClientRegistry.registerKeyBinding(keyBinding);
 		}
 	}
 
 	@EventHandler
-	public void init(FMLInitializationEvent event) {
+	public void init(final FMLInitializationEvent event) {
 		FMLCommonHandler.instance().bus().register(InputHandler.INSTANCE);
 		FMLCommonHandler.instance().bus().register(ClientTickHandler.INSTANCE);
 	}
 
 	@EventHandler
-	public void postInit(FMLPostInitializationEvent event) {
+	public void postInit(final FMLPostInitializationEvent event) {
 
 	}
 
-	@EventHandler
-	public void serverStarting(FMLServerStartingEvent event) {
-
+	@NetworkCheckHandler
+	public boolean netCheckHandler(final Map<String, String> mods, final Side side) {
+		return true;
 	}
 }
