@@ -160,7 +160,7 @@ public class GuiAutoInput extends GuiFrame implements IGuiControllable {
 		keypanels.add(keypanelinner);
 		p.add(keypanels);
 
-		final GuiComponent c33 = new CButton(new RelativePosition (60, 120, -60, 140), "") {
+		final GuiComponent c3 = new CButton(new RelativePosition (60, 120, -60, 140), "") {
 			private String displayString = I18n.format(Names.Gui.OPTIONS);
 			@Override
 			public void mouseClicked(final GuiTools tools, final GuiPosition pgp, final Point p, final int button) {
@@ -182,7 +182,7 @@ public class GuiAutoInput extends GuiFrame implements IGuiControllable {
 			}
 		};
 
-		final GuiComponent c44 = new CButton(new RelativePosition(70, 145, -70, 165), I18n.format(Names.Gui.DONE)) {
+		final GuiComponent c4 = new CButton(new RelativePosition(70, 145, -70, 165), I18n.format(Names.Gui.DONE)) {
 			@Override
 			public void mouseClicked(final GuiTools tools, final GuiPosition pgp, final Point p, final int button) {
 				final GuiPosition gp = pgp.child(this.rp);
@@ -201,8 +201,8 @@ public class GuiAutoInput extends GuiFrame implements IGuiControllable {
 				}
 			}
 		};
-		p.add(c33);
-		p.add(c44);
+		p.add(c3);
+		p.add(c4);
 		add(p);
 	}
 }

@@ -45,12 +45,13 @@ public class InputHandler {
 				final int keys = keyBinding.getKeyCode();
 				if (keys != 0) {
 					if (keyBinding.getMode()) {
-						continuousKeys.add(keys);
-					} else {
 						holdKeys.add(keys);
+					} else {
+						continuousKeys.add(keys);
 					}
 				}
 			}
+
 			if (this.mc.currentScreen == null)
 				keyInput = !keyInput;
 
