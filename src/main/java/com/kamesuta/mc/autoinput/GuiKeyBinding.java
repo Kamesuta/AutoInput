@@ -1,11 +1,10 @@
 package com.kamesuta.mc.autoinput;
 
 public class GuiKeyBinding {
-	protected int keycode;
-	protected boolean mode;
+	private int keycode;
+	private boolean mode;
 
 	public GuiKeyBinding() {
-
 	}
 
 	public int getKeyCode() {
