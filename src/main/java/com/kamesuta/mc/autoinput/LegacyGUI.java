@@ -30,7 +30,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiAutoInput extends GuiFrame implements IGuiControllable {
+public class LegacyGUI extends GuiFrame implements IGuiControllable {
 	public static List<GuiKeyBinding> keys = new ArrayList<GuiKeyBinding>() {{
 		for (int i = 0; i < 3; i++)
 			this.add(new GuiKeyBinding());

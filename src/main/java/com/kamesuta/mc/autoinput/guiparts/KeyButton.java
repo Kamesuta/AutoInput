@@ -36,9 +36,8 @@ public class KeyButton extends Button {
 			this.keyBinding.setKeyCode((keycode==Keyboard.KEY_ESCAPE) ? Keyboard.KEY_NONE : keycode);
 			setText(getName(keycode));
 			this.reception = false;
-			return true;
-		} else {
 			this.guiBnn.setHook(false);
+			return true;
 		}
 		return false;
 	}
