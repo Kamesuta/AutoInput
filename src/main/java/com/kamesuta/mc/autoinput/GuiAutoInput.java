@@ -25,7 +25,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiBnn extends WFrame implements IGuiControllable {
+public class GuiAutoInput extends WFrame implements IGuiControllable {
 
 	public static List<GuiKeyBinding> keys = new ArrayList<GuiKeyBinding>() {
 		{
@@ -116,7 +116,7 @@ public class GuiBnn extends WFrame implements IGuiControllable {
 						int t = 50;
 						for (final GuiKeyBinding binding : keys) {
 							add(new ToggleButton(new RArea(Coord.left(5), Coord.top(t), Coord.right(200/3+5), Coord.height(20)), binding));
-							add(new KeyButton(new RArea(Coord.left(200/3*2+5), Coord.top(t), Coord.right(5), Coord.height(20)), binding, GuiBnn.this));
+							add(new KeyButton(new RArea(Coord.left(200/3*2+5), Coord.top(t), Coord.right(5), Coord.height(20)), binding, GuiAutoInput.this));
 							t += 25;
 						}
 

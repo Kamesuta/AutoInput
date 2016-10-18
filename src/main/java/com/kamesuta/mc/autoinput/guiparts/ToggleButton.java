@@ -27,7 +27,8 @@ public class ToggleButton extends Button {
 
 	@Override
 	protected void onClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
-		if (button==0) {
+		final Area abs = getGuiPosition(pgp);
+		if (abs.pointInside(p)&&button==0) {
 			this.keyBinding.setMode(!this.keyBinding.getMode());
 			setText(this.keyBinding.getMode() ? buttonEnabled : buttonDisabled);
 		}

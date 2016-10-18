@@ -26,10 +26,10 @@ public class InputHandler {
 	@SubscribeEvent
 	public void onKeyInput(final InputEvent event) {
 		if (KEY_BINDING_GUI.isPressed()&&this.mc.currentScreen==null)
-			this.mc.displayGuiScreen(new GuiBnn());
+			this.mc.displayGuiScreen(new GuiAutoInput());
 
 		if (KEY_BINDING_TOGGLE.isPressed()&&this.mc.currentScreen==null) {
-			for (final GuiKeyBinding binding : GuiBnn.keys) {
+			for (final GuiKeyBinding binding : GuiAutoInput.keys) {
 				if (binding.getKeyCode()!=0) {
 					if (binding.getMode()) {
 						KeyBinding.setKeyBindState(binding.getKeyCode(), keyInput);
