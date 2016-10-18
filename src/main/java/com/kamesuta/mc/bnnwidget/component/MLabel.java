@@ -1,13 +1,15 @@
 package com.kamesuta.mc.bnnwidget.component;
 
+import static org.lwjgl.opengl.GL11.*;
+
 import org.apache.commons.lang3.StringUtils;
 
+import com.kamesuta.mc.autoinput.RenderHelper;
 import com.kamesuta.mc.bnnwidget.WBase;
 import com.kamesuta.mc.bnnwidget.WEvent;
 import com.kamesuta.mc.bnnwidget.position.Area;
 import com.kamesuta.mc.bnnwidget.position.Point;
 import com.kamesuta.mc.bnnwidget.position.R;
-import com.kamesuta.mc.autoinput.RenderHelper;
 
 public class MLabel extends WBase {
 	protected int textcolor = 14737632;
@@ -16,6 +18,14 @@ public class MLabel extends WBase {
 	public MLabel(final R position, final String text) {
 		super(position);
 		this.text = text;
+	}
+
+	public void setColor(final int color) {
+		this.textcolor = color;
+	}
+
+	public int getColor() {
+		return this.textcolor;
 	}
 
 	public void setText(final String s) {
@@ -40,8 +50,32 @@ public class MLabel extends WBase {
 		drawText(out);
 	}
 
+	protected float wscale = 1f;
+
+	public void setScaleWidth(final float f) {
+		this.wscale = f;
+	}
+
+	public float getScaleWidth() {
+		return this.wscale;
+	}
+
+	protected float hscale = 1f;
+
+	public void setScaleHeight(final float f) {
+		this.hscale = f;
+	}
+
+	public float getScaleHeight() {
+		return this.hscale;
+	}
+
 	protected void drawText(final Area a) {
+		glPushMatrix();
+		glTranslated(a.x1()+a.w()/2, a.y1() + a.h()/2 , 0);
+		glScaled(getScaleWidth(), getScaleHeight(), 1);
 		RenderHelper.startTexture();
-		drawStringC(getText(), a.x1()+a.w()/2, a.y1() + (a.h()-font().FONT_HEIGHT) / 2, this.textcolor);
+		drawStringC(getText(), 0, 0, 0, 0, getColor());
+		glPopMatrix();
 	}
 }
