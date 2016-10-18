@@ -11,8 +11,18 @@ import com.kamesuta.mc.bnnwidget.position.R;
 
 public class Button extends WButton {
 
+	protected int textcolor = 0xffffff;
+
 	public Button(final R position, final String text) {
 		super(position, text);
+	}
+
+	public void setTextColor(final int color) {
+		this.textcolor = color;
+	}
+
+	public int getTextColor() {
+		return this.textcolor;
 	}
 
 	@Override
@@ -28,7 +38,7 @@ public class Button extends WButton {
 		}
 		glPushMatrix();
 		glTranslated(a.x1()+a.w()/2, a.y1()+a.h()/2, 0);
-		drawStringC(this.text, 0, 0, 0, 0, 0xffffff);
+		drawStringC(this.text, 0, 0, 0, 0, getTextColor());
 		glPopMatrix();
 	}
 }

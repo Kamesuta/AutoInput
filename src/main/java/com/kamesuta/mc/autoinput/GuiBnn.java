@@ -5,6 +5,8 @@ import static org.lwjgl.opengl.GL11.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.kamesuta.mc.autoinput.guiparts.Button;
+import com.kamesuta.mc.autoinput.guiparts.IGuiControllable;
 import com.kamesuta.mc.autoinput.guiparts.KeyButton;
 import com.kamesuta.mc.autoinput.guiparts.ToggleButton;
 import com.kamesuta.mc.autoinput.reference.Names;
@@ -18,9 +20,11 @@ import com.kamesuta.mc.bnnwidget.position.Coord;
 import com.kamesuta.mc.bnnwidget.position.Point;
 import com.kamesuta.mc.bnnwidget.position.RArea;
 
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.ResourceLocation;
 
-public class GuiBnn extends WFrame {
+public class GuiBnn extends WFrame implements IGuiControllable {
 
 	public static List<GuiKeyBinding> keys = new ArrayList<GuiKeyBinding>() {
 		{
@@ -30,10 +34,16 @@ public class GuiBnn extends WFrame {
 		}
 	};
 
-	protected boolean hookEsc;
+	private WCommon gui;
 
-	public void setHook(final boolean status) {
-		this.hookEsc = status;
+	@Override
+	public void setControllable(final WCommon gui) {
+		this.gui = gui;
+	}
+
+	@Override
+	public boolean isControllable() {
+		return this.gui==null;
 	}
 
 	@Override
@@ -109,22 +119,50 @@ public class GuiBnn extends WFrame {
 							t += 25;
 						}
 
+						add(new Button(new RArea(Coord.left(60), Coord.top(120), Coord.right(60), Coord.height(20)), I18n.format(Names.Gui.OPTIONS)) {
+							@Override
+							public boolean mouseClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
+								final Area a = getGuiPosition(pgp);
+								if (a.pointInside(p)&&button==0) {
+									setTextColor(0xff5555);
+									setText(I18n.format(Names.Gui.NOTAVAIABLE));
+									return true;
+								}
+								return false;
+							}
+						});
 					}
-
 				});
 			}
 		});
 	}
 
 	@Override
-	protected void keyTyped(final char c, final int keycode) {
-		if (this.hookEsc) {
+	protected void mouseClicked(final int x, final int y, final int button) {
+		if (isControllable()) {
+			super.mouseClicked(x, y, button);
+		} else {
+			this.mousebutton = button;
 			final Area gp = getAbsolute();
 			final Point p = getMouseAbsolute();
-			for (final WCommon widget : this.widgets)
-				widget.keyTyped(this.event, gp, p, c, keycode);
-		} else {
-			super.keyTyped(c, keycode);
+			this.gui.mouseClicked(this.event, gp, p, button);
 		}
+	}
+
+	@Override
+	protected void keyTyped(final char c, final int keycode) {
+		if (isControllable()) {
+			super.keyTyped(c, keycode);
+		} else {
+			final Area gp = getAbsolute();
+			final Point p = getMouseAbsolute();
+			this.gui.keyTyped(this.event, gp, p, c, keycode);
+		}
+	}
+
+	@Override
+	public void requestClose() {
+		this.mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
+		super.requestClose();
 	}
 }
