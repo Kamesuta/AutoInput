@@ -29,7 +29,7 @@ public class InputHandler {
 			this.mc.displayGuiScreen(new GuiBnn());
 
 		if (KEY_BINDING_TOGGLE.isPressed()&&this.mc.currentScreen==null) {
-			for (final GuiKeyBinding binding : LegacyGUI.keys) {
+			for (final GuiKeyBinding binding : GuiBnn.keys) {
 				if (binding.getKeyCode()!=0) {
 					if (binding.getMode()) {
 						KeyBinding.setKeyBindState(binding.getKeyCode(), keyInput);

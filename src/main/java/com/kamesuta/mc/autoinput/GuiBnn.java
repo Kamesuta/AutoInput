@@ -10,6 +10,7 @@ import com.kamesuta.mc.autoinput.guiparts.IGuiControllable;
 import com.kamesuta.mc.autoinput.guiparts.KeyButton;
 import com.kamesuta.mc.autoinput.guiparts.ToggleButton;
 import com.kamesuta.mc.autoinput.reference.Names;
+import com.kamesuta.mc.autoinput.widget.RenderHelper;
 import com.kamesuta.mc.bnnwidget.WCommon;
 import com.kamesuta.mc.bnnwidget.WEvent;
 import com.kamesuta.mc.bnnwidget.WFrame;
@@ -120,12 +121,26 @@ public class GuiBnn extends WFrame implements IGuiControllable {
 						}
 
 						add(new Button(new RArea(Coord.left(60), Coord.top(120), Coord.right(60), Coord.height(20)), I18n.format(Names.Gui.OPTIONS)) {
+
 							@Override
 							public boolean mouseClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
 								final Area a = getGuiPosition(pgp);
 								if (a.pointInside(p)&&button==0) {
 									setTextColor(0xff5555);
 									setText(I18n.format(Names.Gui.NOTAVAIABLE));
+									return true;
+								}
+								return false;
+							}
+						});
+
+						add(new Button(new RArea(Coord.left(70), Coord.top(145), Coord.right(70), Coord.height(20)), I18n.format(Names.Gui.DONE)) {
+
+							@Override
+							public boolean mouseClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
+								final Area a = getGuiPosition(pgp);
+								if (a.pointInside(p)&&button==0) {
+									requestClose();
 									return true;
 								}
 								return false;

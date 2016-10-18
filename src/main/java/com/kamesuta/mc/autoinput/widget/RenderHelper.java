@@ -1,4 +1,4 @@
-package com.kamesuta.mc.autoinput;
+package com.kamesuta.mc.autoinput.widget;
 
 
 import static org.lwjgl.opengl.GL11.*;

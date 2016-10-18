@@ -1,4 +1,4 @@
-package com.kamesuta.mc.signpic.util;
+package com.kamesuta.mc.autoinput.widget;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

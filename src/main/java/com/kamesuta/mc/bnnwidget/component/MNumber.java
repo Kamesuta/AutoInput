@@ -2,7 +2,7 @@ package com.kamesuta.mc.bnnwidget.component;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
-import com.kamesuta.mc.autoinput.MetaParser;
+import com.kamesuta.mc.autoinput.widget.MetaParser;
 import com.kamesuta.mc.bnnwidget.WEvent;
 import com.kamesuta.mc.bnnwidget.WPanel;
 import com.kamesuta.mc.bnnwidget.position.Area;

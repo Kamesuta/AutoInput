@@ -2,12 +2,12 @@ package com.kamesuta.mc.bnnwidget.component;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import com.kamesuta.mc.autoinput.widget.RenderHelper;
 import com.kamesuta.mc.bnnwidget.WEvent;
 import com.kamesuta.mc.bnnwidget.WPanel;
 import com.kamesuta.mc.bnnwidget.position.Area;
 import com.kamesuta.mc.bnnwidget.position.Point;
 import com.kamesuta.mc.bnnwidget.position.R;
-import com.kamesuta.mc.autoinput.RenderHelper;
 
 import net.minecraft.util.ResourceLocation;
 

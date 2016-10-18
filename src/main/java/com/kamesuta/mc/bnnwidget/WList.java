@@ -6,10 +6,10 @@ import java.util.Set;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.kamesuta.mc.autoinput.widget.NotifyCollections.IModCount;
 import com.kamesuta.mc.bnnwidget.position.Area;
 import com.kamesuta.mc.bnnwidget.position.Point;
 import com.kamesuta.mc.bnnwidget.position.R;
-import com.kamesuta.mc.signpic.util.NotifyCollections.IModCount;
 
 public abstract class WList<T, W extends WCommon> extends WTypedPanel<W> {
 	protected IModCount<T> check;

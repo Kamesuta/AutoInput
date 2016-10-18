@@ -4,7 +4,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.kamesuta.mc.autoinput.RenderHelper;
+import com.kamesuta.mc.autoinput.widget.RenderHelper;
 import com.kamesuta.mc.bnnwidget.WBase;
 import com.kamesuta.mc.bnnwidget.WEvent;
 import com.kamesuta.mc.bnnwidget.position.Area;
