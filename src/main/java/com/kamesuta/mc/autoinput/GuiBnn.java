@@ -2,7 +2,13 @@ package com.kamesuta.mc.autoinput;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.kamesuta.mc.autoinput.guiparts.KeyButton;
+import com.kamesuta.mc.autoinput.guiparts.ToggleButton;
 import com.kamesuta.mc.autoinput.reference.Names;
+import com.kamesuta.mc.bnnwidget.WCommon;
 import com.kamesuta.mc.bnnwidget.WEvent;
 import com.kamesuta.mc.bnnwidget.WFrame;
 import com.kamesuta.mc.bnnwidget.WPanel;
@@ -15,7 +21,20 @@ import com.kamesuta.mc.bnnwidget.position.RArea;
 import net.minecraft.client.resources.I18n;
 
 public class GuiBnn extends WFrame {
+
+	public static List<GuiKeyBinding> keys = new ArrayList<GuiKeyBinding>() {
+		{
+			this.add(new GuiKeyBinding().setMode(true).setKeyCode(-99));
+			this.add(new GuiKeyBinding());
+			this.add(new GuiKeyBinding());
+		}
+	};
+
 	protected boolean hookEsc;
+
+	public void setHook(final boolean status) {
+		this.hookEsc = status;
+	}
 
 	@Override
 	protected void init() {
@@ -51,6 +70,7 @@ public class GuiBnn extends WFrame {
 							{
 								setScaleWidth(2f);
 								setScaleHeight(2f);
+								setColor(0xffffff);
 							}
 
 							@Override
@@ -66,6 +86,10 @@ public class GuiBnn extends WFrame {
 						});
 
 						add(new MLabel(new RArea(Coord.left(5), Coord.top(30), Coord.right(5), Coord.height(15)), I18n.format(Names.Gui.SETTINGS)) {
+							{
+								setColor(0xffffff);
+							}
+
 							@Override
 							public void draw(final WEvent ev, final Area pgp, final Point p, final float frame, final float opacity) {
 								final Area a = getGuiPosition(pgp);
@@ -77,15 +101,30 @@ public class GuiBnn extends WFrame {
 								super.draw(ev, pgp, p, frame, opacity);
 							}
 						});
+
+						int t = 50;
+						for (final GuiKeyBinding binding : keys) {
+							add(new ToggleButton(new RArea(Coord.left(5), Coord.top(t), Coord.right(200/3+5), Coord.height(20)), binding));
+							add(new KeyButton(new RArea(Coord.left(200/3*2+5), Coord.top(t), Coord.right(5), Coord.height(20)), binding, GuiBnn.this));
+							t += 25;
+						}
+
 					}
+
 				});
 			}
 		});
 	}
 
 	@Override
-	protected void sKeyTyped(final char c, final int keycode) {
-		if (!this.hookEsc)
-			super.sKeyTyped(c, keycode);
+	protected void keyTyped(final char c, final int keycode) {
+		if (this.hookEsc) {
+			final Area gp = getAbsolute();
+			final Point p = getMouseAbsolute();
+			for (final WCommon widget : this.widgets)
+				widget.keyTyped(this.event, gp, p, c, keycode);
+		} else {
+			super.keyTyped(c, keycode);
+		}
 	}
 }

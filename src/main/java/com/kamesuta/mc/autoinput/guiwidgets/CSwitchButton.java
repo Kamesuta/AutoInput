@@ -10,7 +10,7 @@ import com.kamesuta.mc.guiwidget.position.Point;
 
 import net.minecraft.client.resources.I18n;
 
-public class CSwitchButton extends CButton{
+public class CSwitchButton extends CButton {
 
 	protected GuiKeyBinding keySwitch;
 	private final String buttonEnabled = I18n.format(Names.Gui.SIWTCH_1);

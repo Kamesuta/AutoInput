@@ -2,6 +2,7 @@ package com.kamesuta.mc.bnnwidget.component;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
+import com.kamesuta.mc.autoinput.MetaParser;
 import com.kamesuta.mc.bnnwidget.WEvent;
 import com.kamesuta.mc.bnnwidget.WPanel;
 import com.kamesuta.mc.bnnwidget.position.Area;
@@ -9,7 +10,6 @@ import com.kamesuta.mc.bnnwidget.position.Coord;
 import com.kamesuta.mc.bnnwidget.position.Point;
 import com.kamesuta.mc.bnnwidget.position.R;
 import com.kamesuta.mc.bnnwidget.position.RArea;
-import com.kamesuta.mc.autoinput.MetaParser;
 
 import net.minecraft.client.gui.GuiScreen;
 
@@ -22,7 +22,7 @@ public class MNumber extends WPanel {
 		super(position);
 		this.neg = new MButton(new RArea(Coord.left(0), Coord.width(buttonwidth), Coord.top(0), Coord.bottom(0)), "-") {
 			@Override
-			protected boolean onClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
+			protected void onClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
 				float f;
 				if (GuiScreen.isShiftKeyDown())
 					f = .1f;
@@ -31,7 +31,6 @@ public class MNumber extends WPanel {
 				else
 					f = 1f;
 				MNumber.this.field.setText(MetaParser.format(NumberUtils.toFloat(MNumber.this.field.getText(), 0)-f));
-				return true;
 			}
 		};
 		add(this.neg);
@@ -44,7 +43,7 @@ public class MNumber extends WPanel {
 		add(this.field);
 		this.pos = new MButton(new RArea(Coord.right(0), Coord.width(buttonwidth), Coord.top(0), Coord.bottom(0)), "+") {
 			@Override
-			protected boolean onClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
+			protected void onClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
 				float f;
 				if (GuiScreen.isShiftKeyDown())
 					f = .1f;
@@ -53,7 +52,6 @@ public class MNumber extends WPanel {
 				else
 					f = 1f;
 				MNumber.this.field.setText(MetaParser.format(NumberUtils.toFloat(MNumber.this.field.getText(), 0)+f));
-				return true;
 			}
 		};
 		add(this.pos);
