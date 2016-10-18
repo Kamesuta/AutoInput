@@ -9,7 +9,7 @@ import com.kamesuta.mc.bnnwidget.position.Coord;
 import com.kamesuta.mc.bnnwidget.position.Point;
 import com.kamesuta.mc.bnnwidget.position.R;
 import com.kamesuta.mc.bnnwidget.position.RArea;
-import com.kamesuta.mc.signpic.image.meta.ImageMeta.MetaParser;
+import com.kamesuta.mc.autoinput.MetaParser;
 
 import net.minecraft.client.gui.GuiScreen;
 

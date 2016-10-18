@@ -48,7 +48,7 @@ public class MChatTextField extends WBase {
 	}
 
 	@Override
-	public void draw(final WEvent ev, final Area pgp, final Point p, final float frame) {
+	public void draw(final WEvent ev, final Area pgp, final Point p, final float frame, final float opacity) {
 		final Area a = getGuiPosition(pgp);
 		final int x = this.t.xPosition;
 		final int y = this.t.yPosition;
@@ -81,7 +81,7 @@ public class MChatTextField extends WBase {
 	}
 
 	@Override
-	public void mouseClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
+	public boolean mouseClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
 		final Area a = getGuiPosition(pgp);
 		updateArea(a);
 		final boolean b = isFocused();
@@ -89,6 +89,7 @@ public class MChatTextField extends WBase {
 			setText("");
 		this.t.mouseClicked((int) p.x(), (int) p.y(), button);
 		if (b!=isFocused()) onFocusChanged();
+		return isFocused();
 	}
 
 	@Override
@@ -97,9 +98,10 @@ public class MChatTextField extends WBase {
 	}
 
 	@Override
-	public void keyTyped(final WEvent ev, final Area pgp, final Point p, final char c, final int keycode) {
+	public boolean keyTyped(final WEvent ev, final Area pgp, final Point p, final char c, final int keycode) {
 		if (canAddChar(c))
 			this.t.textboxKeyTyped(c, keycode);
+		return isFocused();
 	}
 
 	@Override

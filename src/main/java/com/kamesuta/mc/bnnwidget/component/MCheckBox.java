@@ -2,7 +2,7 @@ package com.kamesuta.mc.bnnwidget.component;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import com.kamesuta.mc.autoinput.guiwidgets.RenderHelper;
+import com.kamesuta.mc.autoinput.RenderHelper;
 import com.kamesuta.mc.bnnwidget.WEvent;
 import com.kamesuta.mc.bnnwidget.position.Area;
 import com.kamesuta.mc.bnnwidget.position.Point;
@@ -28,14 +28,17 @@ public class MCheckBox extends MLabel {
 	}
 
 	@Override
-	public void mouseClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
+	public boolean mouseClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
 		final Area a = getGuiPosition(pgp);
-		if (a.pointInside(p))
+		if (a.pointInside(p)) {
 			check(!this.checked);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
-	public void draw(final WEvent ev, final Area pgp, final Point p, final float frame) {
+	public void draw(final WEvent ev, final Area pgp, final Point p, final float frame, final float opacity) {
 		final Area o = getGuiPosition(pgp);
 		final Area a = new Area(o.x1(), o.y1(), o.x1()+o.h(), o.y2());
 		drawCheckBox(a);

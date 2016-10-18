@@ -2,7 +2,7 @@ package com.kamesuta.mc.bnnwidget.component;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import com.kamesuta.mc.autoinput.guiwidgets.RenderHelper;
+import com.kamesuta.mc.autoinput.RenderHelper;
 import com.kamesuta.mc.bnnwidget.WBase;
 import com.kamesuta.mc.bnnwidget.WEvent;
 import com.kamesuta.mc.bnnwidget.position.Area;
@@ -12,7 +12,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.util.ResourceLocation;
 
 public class MButton extends WBase {
-	public static final ResourceLocation button = new ResourceLocation("signpic", "textures/gui/buttons.png");
+	public static final ResourceLocation button = new ResourceLocation("autoinput", "textures/gui/buttons.png");
 
 	public String text;
 	public String actionCommand;
@@ -36,16 +36,20 @@ public class MButton extends WBase {
 	}
 
 	@Override
-	public void mouseClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
+	public boolean mouseClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
 		final Area abs = getGuiPosition(pgp);
-		if ((isEnabled()) && (abs.pointInside(p))) {
-			if (onClicked(ev, pgp, p, button)) {
-				if (this.actionCommand != null)
-					ev.eventDispatch(this.actionCommand, Integer.valueOf(button));
-				mc.getSoundHandler()
-				.playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
+		if (abs.pointInside(p)) {
+			if (isEnabled()) {
+				if (onClicked(ev, pgp, p, button)) {
+					if (this.actionCommand != null)
+						ev.eventDispatch(this.actionCommand, Integer.valueOf(button));
+					mc.getSoundHandler()
+					.playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
+				}
 			}
+			return true;
 		}
+		return false;
 	}
 
 	protected boolean onClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
@@ -53,7 +57,7 @@ public class MButton extends WBase {
 	}
 
 	@Override
-	public void draw(final WEvent ev, final Area pgp, final Point p, final float frame) {
+	public void draw(final WEvent ev, final Area pgp, final Point p, final float frame, final float opacity) {
 		drawButtonTex(ev, pgp, p, frame);
 		if (this.text != null) {
 			drawText(ev, pgp, p, frame);

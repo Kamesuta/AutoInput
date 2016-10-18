@@ -2,25 +2,26 @@ package com.kamesuta.mc.bnnwidget.component;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import com.kamesuta.mc.autoinput.guiwidgets.RenderHelper;
 import com.kamesuta.mc.bnnwidget.WEvent;
 import com.kamesuta.mc.bnnwidget.WPanel;
 import com.kamesuta.mc.bnnwidget.position.Area;
 import com.kamesuta.mc.bnnwidget.position.Point;
 import com.kamesuta.mc.bnnwidget.position.R;
+import com.kamesuta.mc.autoinput.RenderHelper;
+
 import net.minecraft.util.ResourceLocation;
 
 public class MPanel extends WPanel {
-	public static final ResourceLocation background = new ResourceLocation("signpic", "textures/gui/background.png");
+	public static final ResourceLocation background = new ResourceLocation("autoinput", "textures/gui/background.png");
 
 	public MPanel(final R position) {
 		super(position);
 	}
 
 	@Override
-	public void draw(final WEvent ev, final Area pgp, final Point p, final float frame) {
+	public void draw(final WEvent ev, final Area pgp, final Point p, final float frame, final float opacity) {
 		drawButtonTex(ev, pgp, p, frame);
-		super.draw(ev, pgp, p, frame);
+		super.draw(ev, pgp, p, frame, opacity);
 	}
 
 	protected void drawButtonTex(final WEvent ev, final Area pgp, final Point p, final float frame) {

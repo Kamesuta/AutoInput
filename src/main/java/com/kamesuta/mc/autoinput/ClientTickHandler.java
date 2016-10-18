@@ -9,6 +9,8 @@ import net.minecraft.client.settings.KeyBinding;
 public class ClientTickHandler {
 	public static final ClientTickHandler INSTANCE = new ClientTickHandler();
 	private final HashSet<Integer> keys = new HashSet<Integer>();
+	private HashSet<Integer> demon = new HashSet<Integer>();
+	public boolean openGUI = false;
 
 	private ClientTickHandler() {
 	}
