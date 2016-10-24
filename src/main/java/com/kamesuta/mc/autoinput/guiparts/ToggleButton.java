@@ -1,11 +1,11 @@
 package com.kamesuta.mc.autoinput.guiparts;
 
 import com.kamesuta.mc.autoinput.GuiKeyBinding;
+import com.kamesuta.mc.autoinput.bnnwidget.WEvent;
+import com.kamesuta.mc.autoinput.bnnwidget.position.Area;
+import com.kamesuta.mc.autoinput.bnnwidget.position.Point;
+import com.kamesuta.mc.autoinput.bnnwidget.position.R;
 import com.kamesuta.mc.autoinput.reference.Names;
-import com.kamesuta.mc.bnnwidget.WEvent;
-import com.kamesuta.mc.bnnwidget.position.Area;
-import com.kamesuta.mc.bnnwidget.position.Point;
-import com.kamesuta.mc.bnnwidget.position.R;
 
 import net.minecraft.client.resources.I18n;
 

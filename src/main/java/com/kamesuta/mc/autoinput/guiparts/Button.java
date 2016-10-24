@@ -2,12 +2,12 @@ package com.kamesuta.mc.autoinput.guiparts;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import com.kamesuta.mc.autoinput.bnnwidget.WButton;
+import com.kamesuta.mc.autoinput.bnnwidget.WEvent;
+import com.kamesuta.mc.autoinput.bnnwidget.position.Area;
+import com.kamesuta.mc.autoinput.bnnwidget.position.Point;
+import com.kamesuta.mc.autoinput.bnnwidget.position.R;
 import com.kamesuta.mc.autoinput.widget.RenderHelper;
-import com.kamesuta.mc.bnnwidget.WButton;
-import com.kamesuta.mc.bnnwidget.WEvent;
-import com.kamesuta.mc.bnnwidget.position.Area;
-import com.kamesuta.mc.bnnwidget.position.Point;
-import com.kamesuta.mc.bnnwidget.position.R;
 
 public class Button extends WButton {
 

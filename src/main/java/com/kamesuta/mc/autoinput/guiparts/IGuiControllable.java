@@ -1,6 +1,6 @@
 package com.kamesuta.mc.autoinput.guiparts;
 
-import com.kamesuta.mc.bnnwidget.WCommon;
+import com.kamesuta.mc.autoinput.bnnwidget.WCommon;
 
 public interface IGuiControllable {
 
