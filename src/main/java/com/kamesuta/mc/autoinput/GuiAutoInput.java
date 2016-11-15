@@ -176,8 +176,8 @@ public class GuiAutoInput extends WFrame implements IGuiControllable {
 	}
 
 	@Override
-	public void requestClose() {
+	public void onGuiClosed() {
 		this.mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
-		super.requestClose();
+		super.onGuiClosed();
 	}
 }
