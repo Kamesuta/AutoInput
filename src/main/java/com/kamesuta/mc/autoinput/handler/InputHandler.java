@@ -20,34 +20,25 @@ public class InputHandler {
 	public static final KeyBinding[] KEY_BINDINGS = new KeyBinding[] { KEY_BINDING_GUI, KEY_BINDING_TOGGLE };
 	public static boolean keyInput;
 
-	public final Minecraft mc = Minecraft.getMinecraft();
-
 	private InputHandler() {
 	}
 
 	@SubscribeEvent
 	public void onKeyInput(final InputEvent event) {
-		if (KEY_BINDING_GUI.isPressed()&&this.mc.currentScreen==null)
-			this.mc.displayGuiScreen(new GuiAutoInput());
+		if (KEY_BINDING_GUI.isPressed()&&Minecraft.getMinecraft().currentScreen==null)
+			Minecraft.getMinecraft().displayGuiScreen(new GuiAutoInput());
 
-		if (KEY_BINDING_TOGGLE.isPressed()&&this.mc.currentScreen==null) {
+		if (KEY_BINDING_TOGGLE.isPressed()&Minecraft.getMinecraft().currentScreen==null) {
 			for (final GuiKeyBinding binding : GuiAutoInput.keys) {
 				final int code = binding.getKeyCode();
-				if (code!=0) {
+				if (code!=0)
 					if (binding.getMode()) {
 						if (keyInput)
 							ClientTickHandler.tickKeys.remove(code);
 						else
 							ClientTickHandler.tickKeys.add(code);
-					} else {
+					} else
 						KeyBinding.setKeyBindState(code, !keyInput);
-						if (keyInput)
-							ClientTickHandler.stateKeys.remove(code);
-						else
-							ClientTickHandler.stateKeys.add(code);
-
-					}
-				}
 			}
 			keyInput = !keyInput;
 		}
