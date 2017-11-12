@@ -17,6 +17,7 @@ import com.kamesuta.mc.autoinput.bnnwidget.render.OpenGL;
 import com.kamesuta.mc.autoinput.bnnwidget.render.WGui;
 import com.kamesuta.mc.autoinput.bnnwidget.render.WRenderer;
 import com.kamesuta.mc.autoinput.bnnwidget.render.WGui.Align;
+import com.kamesuta.mc.autoinput.bnnwidget.render.WGui.VerticalAlign;
 
 /**
  * {@link WFont}のTrueTypeフォント実装です
@@ -93,6 +94,7 @@ public class TrueTypeFont implements WFont {
 		final float scaleY = p.getScaleY();
 		final int fontsize = p.getFontSize();
 		final Align align = p.getAlign();
+		final VerticalAlign valign = p.getVAlign();
 
 		char charCurrent;
 
@@ -101,7 +103,19 @@ public class TrueTypeFont implements WFont {
 		final Iterator<String> lineitr = Iterators.forArray(line);
 		float guesswidth = lineitr.hasNext() ? getWidth(new FontPosition(p).setText(lineitr.next())) : 0;
 		int i = startIndex;
-		float startY = 0;
+		float startY;
+		switch (valign) {
+			default:
+			case TOP:
+				startY = 0;
+				break;
+			case MIDDLE:
+				startY = -StringUtils.countMatches(whatchars, "\n")*this.style.getFontShape(fontsize).getFontShape().fontSize/2f-12f;
+				break;
+			case BOTTOM:
+				startY = -StringUtils.countMatches(whatchars, "\n")*this.style.getFontShape(fontsize).getFontShape().fontSize-4f;
+				break;
+		}
 
 		boolean randomStyle = false;
 		boolean boldStyle = false;
@@ -135,7 +149,7 @@ public class TrueTypeFont implements WFont {
 							j += 16;
 
 						final int k = TrueTypeFont.colorCode[j];
-						OpenGL.glColorRGB(k);
+						OpenGL.glColorRGBA(k|pcolor.getAlpha()<<24);
 						;
 					} else if (j==16)
 						randomStyle = true;

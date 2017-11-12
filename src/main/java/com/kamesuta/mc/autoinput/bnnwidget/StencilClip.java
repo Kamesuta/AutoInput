@@ -10,10 +10,10 @@ import com.kamesuta.mc.autoinput.bnnwidget.position.Area;
 import com.kamesuta.mc.autoinput.bnnwidget.render.OpenGL;
 import com.kamesuta.mc.autoinput.bnnwidget.render.WGui;
 
-import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 /**
  * 描画を切り抜くためのユーティリティメソッド群です。

@@ -2,6 +2,7 @@ package com.kamesuta.mc.autoinput;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,16 +16,17 @@ import com.kamesuta.mc.autoinput.bnnwidget.position.Coord;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Point;
 import com.kamesuta.mc.autoinput.bnnwidget.position.R;
 import com.kamesuta.mc.autoinput.bnnwidget.render.OpenGL;
+import com.kamesuta.mc.autoinput.bnnwidget.render.RenderOption;
+import com.kamesuta.mc.autoinput.bnnwidget.render.WRenderer;
 import com.kamesuta.mc.autoinput.guiparts.Button;
 import com.kamesuta.mc.autoinput.guiparts.IGuiControllable;
 import com.kamesuta.mc.autoinput.guiparts.KeyButton;
 import com.kamesuta.mc.autoinput.guiparts.ToggleButton;
 import com.kamesuta.mc.autoinput.reference.Names;
-import com.kamesuta.mc.autoinput.widget.RenderHelper;
 
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.init.SoundEvents;
 
 public class GuiAutoInput extends WFrame implements IGuiControllable {
 
@@ -62,10 +64,10 @@ public class GuiAutoInput extends WFrame implements IGuiControllable {
 					}
 
 					@Override
-					public void draw(final WEvent ev, final Area pgp, final Point p, final float frame, final float opacity) {
+					public void draw(final WEvent ev, final Area pgp, final Point p, final float frame, final float opacity, final RenderOption opt) {
 						final Area a = getGuiPosition(pgp);
 
-						RenderHelper.startShape();
+						WRenderer.startShape();
 						glColor4f(0, 0, 0, 0.4f);
 						draw(a, GL_QUADS);
 
@@ -73,7 +75,7 @@ public class GuiAutoInput extends WFrame implements IGuiControllable {
 						glColor4f(1, 1, 1, 0.2f);
 						draw(a, GL_LINE_LOOP);
 
-						super.draw(ev, pgp, p, frame, opacity);
+						super.draw(ev, pgp, p, frame, opacity, opt);
 					}
 
 					@Override
@@ -86,14 +88,14 @@ public class GuiAutoInput extends WFrame implements IGuiControllable {
 							}
 
 							@Override
-							public void draw(final WEvent ev, final Area pgp, final Point p, final float frame, final float opacity) {
+							public void draw(final WEvent ev, final Area pgp, final Point p, final float frame, final float opacity, final RenderOption opt) {
 								final Area a = getGuiPosition(pgp);
 
+								WRenderer.startShape();
 								OpenGL.glColor4f(1, 1, 1, 0.3f);
-								RenderHelper.startShape();
 								draw(a);
 
-								super.draw(ev, pgp, p, frame, opacity);
+								super.draw(ev, pgp, p, frame, opacity, opt);
 							}
 						}.setText(I18n.format(Names.Gui.TITLE)));
 
@@ -103,14 +105,14 @@ public class GuiAutoInput extends WFrame implements IGuiControllable {
 							}
 
 							@Override
-							public void draw(final WEvent ev, final Area pgp, final Point p, final float frame, final float opacity) {
+							public void draw(final WEvent ev, final Area pgp, final Point p, final float frame, final float opacity, final RenderOption opt) {
 								final Area a = getGuiPosition(pgp);
 
-								glColor4f(1, 1, 1, 0.3f);
-								RenderHelper.startShape();
+								WRenderer.startShape();
+								OpenGL.glColor4f(1, 1, 1, 0.3f);
 								draw(a);
 
-								super.draw(ev, pgp, p, frame, opacity);
+								super.draw(ev, pgp, p, frame, opacity, opt);
 							}
 						}.setText(I18n.format(Names.Gui.SETTINGS)));
 
@@ -154,7 +156,7 @@ public class GuiAutoInput extends WFrame implements IGuiControllable {
 	}
 
 	@Override
-	protected void sMouseClicked(final int x, final int y, final int button) {
+	protected void sMouseClicked(final int x, final int y, final int button) throws IOException {
 		if (isControllable())
 			super.sMouseClicked(x, y, button);
 	}
@@ -167,7 +169,7 @@ public class GuiAutoInput extends WFrame implements IGuiControllable {
 
 	@Override
 	public void onGuiClosed() {
-		this.mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
+		this.mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 		super.onGuiClosed();
 	}
 }

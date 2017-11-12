@@ -10,13 +10,15 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 /**
  * 基本描画準備を担当します
@@ -34,7 +36,13 @@ public class WRenderer extends Gui {
 	 * <p>
 	 * 描画に使用します
 	 */
-	public static final @Nonnull Tessellator t = Tessellator.instance;
+	public static final @Nonnull Tessellator t = Tessellator.getInstance();
+	/**
+	 * WorldRendererインスタンス
+	 * <p>
+	 * 描画に使用します
+	 */
+	public static final @Nonnull VertexBuffer w = t.getBuffer();
 
 	/**
 	 * テクスチャマネージャ
@@ -57,7 +65,7 @@ public class WRenderer extends Gui {
 	 * @return {@link Minecraft#fontRenderer}
 	 */
 	public static @Nonnull FontRenderer font() {
-		return mc.fontRenderer;
+		return mc.fontRendererObj;
 	}
 
 	/**
@@ -114,7 +122,7 @@ public class WRenderer extends Gui {
 		 * @return this
 		 */
 		public @Nonnull WVertex begin(final int mode) {
-			t.startDrawing(mode);
+			w.begin(mode, DefaultVertexFormats.POSITION);
 			init();
 			return this;
 		}
@@ -125,7 +133,7 @@ public class WRenderer extends Gui {
 		 * @return this
 		 */
 		public @Nonnull WVertex beginTexture(final int mode) {
-			t.startDrawing(mode);
+			w.begin(mode, DefaultVertexFormats.POSITION_TEX);
 			init();
 			return this;
 		}
@@ -135,9 +143,9 @@ public class WRenderer extends Gui {
 		}
 
 		private boolean stack;
-		private double stack_x;
-		private double stack_y;
-		private double stack_z;
+		//		private double stack_x;
+		//		private double stack_y;
+		//		private double stack_z;
 
 		/**
 		 * 頂点の設定を開始します。
@@ -150,9 +158,10 @@ public class WRenderer extends Gui {
 		 */
 		public @Nonnull WVertex pos(final double x, final double y, final double z) {
 			endVertex();
-			this.stack_x = x;
-			this.stack_y = y;
-			this.stack_z = z;
+			w.pos(x, y, z);
+			//			this.stack_x = x;
+			//			this.stack_y = y;
+			//			this.stack_z = z;
 			this.stack = true;
 			return this;
 		}
@@ -164,7 +173,7 @@ public class WRenderer extends Gui {
 		 * @return this
 		 */
 		public @Nonnull WVertex tex(final double u, final double v) {
-			t.setTextureUV(u, v);
+			w.tex(u, v);
 			return this;
 		}
 
@@ -189,7 +198,7 @@ public class WRenderer extends Gui {
 		 * @return this
 		 */
 		public @Nonnull WVertex color(final int red, final int green, final int blue, final int alpha) {
-			t.setColorRGBA(red, green, blue, alpha);
+			w.putColorRGBA(0, red, green, blue, alpha);
 			return this;
 		}
 
@@ -201,7 +210,7 @@ public class WRenderer extends Gui {
 		 * @return
 		 */
 		public @Nonnull WVertex normal(final float nx, final float ny, final float nz) {
-			t.setNormal(nx, ny, nz);
+			w.normal(nx, ny, nz);
 			return this;
 		}
 
@@ -212,7 +221,7 @@ public class WRenderer extends Gui {
 		 * @param z Zオフセット
 		 */
 		public void setTranslation(final double x, final double y, final double z) {
-			t.setTranslation(x, y, z);
+			w.setTranslation(x, y, z);
 		}
 
 		/**
@@ -223,7 +232,7 @@ public class WRenderer extends Gui {
 		private void endVertex() {
 			if (this.stack) {
 				this.stack = false;
-				t.addVertex(this.stack_x, this.stack_y, this.stack_z);
+				w.endVertex();
 			}
 		}
 	}

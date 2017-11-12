@@ -5,15 +5,14 @@ import com.kamesuta.mc.autoinput.handler.GuiOpenHandler;
 import com.kamesuta.mc.autoinput.handler.InputHandler;
 import com.kamesuta.mc.autoinput.reference.Reference;
 
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(modid = Reference.MODID, name = Reference.NAME, version = Reference.VERSION)
 public class AutoInputMod {
@@ -30,8 +29,8 @@ public class AutoInputMod {
 
 	@EventHandler
 	public void init(final FMLInitializationEvent event) {
-		FMLCommonHandler.instance().bus().register(InputHandler.INSTANCE);
-		FMLCommonHandler.instance().bus().register(ClientTickHandler.INSTANCE);
+		MinecraftForge.EVENT_BUS.register(InputHandler.INSTANCE);
+		MinecraftForge.EVENT_BUS.register(ClientTickHandler.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(GuiOpenHandler.INSTANCE);
 	}
 

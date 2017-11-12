@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 
 import com.kamesuta.mc.autoinput.bnnwidget.position.Area;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Point;
+import com.kamesuta.mc.autoinput.bnnwidget.render.RenderOption;
 
 /**
  * 全ての軽量コンポーネントの基盤となるインターフェイスです。
@@ -36,8 +37,9 @@ public interface WCommon {
 	 * @param p カーソル絶対座標
 	 * @param frame 描画されるタイミングのpartialTicksです。
 	 * @param popacity 親コンポーネントの絶対透明度
+	 * @param opt レンダリングオプション
 	 */
-	void draw(@Nonnull WEvent ev, @Nonnull Area pgp, @Nonnull Point p, float frame, float popacity);
+	void draw(@Nonnull WEvent ev, @Nonnull Area pgp, @Nonnull Point p, float frame, float popacity, @Nonnull RenderOption opt);
 
 	/**
 	 * コンポーネントが更新されるときに呼ばれます。
@@ -139,4 +141,5 @@ public interface WCommon {
 	 */
 	@Nullable
 	WCommon top(@Nonnull WEvent ev, @Nonnull Area pgp, @Nonnull Point p);
+
 }

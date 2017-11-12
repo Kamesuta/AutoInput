@@ -10,11 +10,11 @@ import com.kamesuta.mc.autoinput.bnnwidget.render.OpenGL;
 import com.kamesuta.mc.autoinput.bnnwidget.render.WGui;
 import com.kamesuta.mc.autoinput.bnnwidget.render.WGui.Align;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * {@link WFont}のMinecraftFontRendererラッパーです
@@ -44,7 +44,7 @@ public class MinecraftFontRenderer extends FontRenderer {
 	}
 
 	@Override
-	public int drawStringWithShadow(@Nullable final String str, final int x, final int y, final int color) {
+	public int drawStringWithShadow(@Nullable final String str, final float x, final float y, final int color) {
 		return this.drawString(str, x, y, color, true);
 	}
 
@@ -53,10 +53,10 @@ public class MinecraftFontRenderer extends FontRenderer {
 		return this.drawString(str, x, y, color, false);
 	}
 
-	private FontPosition pdraw = new FontPosition().setFontSize(FontShape.getFontSize(this.FONT_HEIGHT));
+	private final FontPosition pdraw = new FontPosition().setFontSize(FontShape.getFontSize(this.FONT_HEIGHT));
 
 	@Override
-	public int drawString(@Nullable final String str, final int x, final int y, final int color, final boolean shadow) {
+	public int drawString(@Nullable final String str, final float x, final float y, final int color, final boolean shadow) {
 		if (str!=null) {
 			OpenGL.glColorRGB(color);
 			this.font.drawString(this.pdraw.setPosition(x, y).setText(str).setScale(scale*10f/10f, scale*10f/10f));
@@ -238,14 +238,14 @@ public class MinecraftFontRenderer extends FontRenderer {
 		return Arrays.asList(wrapFormattedStringToWidth0(p_78271_1_, p_78271_2_).split("\n"));
 	}
 
-	private static String getFormatFromString(final String p_78282_0_) {
+	public static String getFormatFromString(final String text) {
 		String s1 = "";
 		int i = -1;
-		final int j = p_78282_0_.length();
+		final int j = text.length();
 
-		while ((i = p_78282_0_.indexOf(167, i+1))!=-1)
+		while ((i = text.indexOf(167, i+1))!=-1)
 			if (i<j-1) {
-				final char c0 = p_78282_0_.charAt(i+1);
+				final char c0 = text.charAt(i+1);
 
 				if (isFormatColor(c0))
 					s1 = "\u00a7"+c0;

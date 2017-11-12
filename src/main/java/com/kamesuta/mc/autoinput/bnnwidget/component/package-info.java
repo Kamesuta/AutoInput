@@ -1,5 +1,5 @@
 /**
  * BnnWidgetの実用的なコンポーネントが含まれるサブセットです
  */
-@com.kamesuta.mc.autoinput.NonNullByDefault
+@com.kamesuta.mc.NonNullByDefault
 package com.kamesuta.mc.autoinput.bnnwidget.component;

@@ -1,4 +1,4 @@
-package com.kamesuta.mc.autoinput;
+package com.kamesuta.mc;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;

@@ -10,7 +10,7 @@ import org.lwjgl.util.Timer;
 
 import com.kamesuta.mc.autoinput.bnnwidget.render.WRenderer;
 
-import cpw.mods.fml.common.eventhandler.EventBus;
+import net.minecraftforge.fml.common.eventhandler.EventBus;
 
 /**
  * いくつかのデータをGUI全体で共有するのに役立ちます。

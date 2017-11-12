@@ -1,5 +1,5 @@
 /**
  * BnnWidgetのユーティリティクラスが含まれるパッケージです。
  */
-@com.kamesuta.mc.autoinput.NonNullByDefault
+@com.kamesuta.mc.NonNullByDefault
 package com.kamesuta.mc.autoinput.bnnwidget.util;

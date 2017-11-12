@@ -6,10 +6,10 @@ import com.kamesuta.mc.autoinput.GuiAutoInput;
 import com.kamesuta.mc.autoinput.GuiKeyBinding;
 import com.kamesuta.mc.autoinput.reference.Names;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.InputEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 public class InputHandler {
 	public static final InputHandler INSTANCE = new InputHandler();

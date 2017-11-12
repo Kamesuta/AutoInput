@@ -14,13 +14,15 @@ import com.kamesuta.mc.autoinput.bnnwidget.position.Area;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Point;
 import com.kamesuta.mc.autoinput.bnnwidget.position.R;
 import com.kamesuta.mc.autoinput.bnnwidget.render.OpenGL;
+import com.kamesuta.mc.autoinput.bnnwidget.render.RenderOption;
 import com.kamesuta.mc.autoinput.bnnwidget.render.WRenderer;
 import com.kamesuta.mc.autoinput.bnnwidget.var.V;
 import com.kamesuta.mc.autoinput.bnnwidget.var.VMotion;
 
-import cpw.mods.fml.common.eventhandler.Event;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
  * Minecraftデザインのボタンコンポーネントです。
@@ -93,7 +95,7 @@ public class MButton extends WBase {
 	 * ボタンが押された時の効果音を再生します
 	 */
 	public static void playPressButtonSound() {
-		mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
+		mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 	}
 
 	/**
@@ -109,7 +111,7 @@ public class MButton extends WBase {
 	}
 
 	@Override
-	public void draw(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final float frame, final float popacity) {
+	public void draw(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final float frame, final float popacity, final @Nonnull RenderOption opt) {
 		final Area a = getGuiPosition(pgp);
 		final float opacity = getGuiOpacity(popacity);
 

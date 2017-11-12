@@ -5,8 +5,8 @@
  * <br>
  * {@link com.kamesuta.mc.autoinput.bnnwidget.WCommon WCommon}はウィジェットの軽量コンポーネントの基本インターフェイスです。
  */
-@com.kamesuta.mc.autoinput.NonNullByDefault
+@com.kamesuta.mc.NonNullByDefault
 @API(apiVersion = "1.0", owner = "bnnwidget", provides = "bnnwidget")
 package com.kamesuta.mc.autoinput.bnnwidget;
 
-import cpw.mods.fml.common.API;
+import net.minecraftforge.fml.common.API;

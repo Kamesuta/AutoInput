@@ -1,5 +1,6 @@
 package com.kamesuta.mc.autoinput.bnnwidget;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,7 @@ import com.kamesuta.mc.autoinput.bnnwidget.position.Area;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Point;
 import com.kamesuta.mc.autoinput.bnnwidget.position.R;
 import com.kamesuta.mc.autoinput.bnnwidget.render.OpenGL;
+import com.kamesuta.mc.autoinput.bnnwidget.render.RenderOption;
 import com.kamesuta.mc.autoinput.bnnwidget.render.WRenderer;
 
 import net.minecraft.client.Minecraft;
@@ -313,20 +315,20 @@ public class WFrame extends GuiScreen implements WCommon, WContainer<WCommon> {
 		super.setWorldAndResolution(mc, i, j);
 	}
 
-	public void drawScreen(final int mousex, final int mousey, final float f, final float opacity) {
+	public void drawScreen(final int mousex, final int mousey, final float f, final float opacity, final @Nullable RenderOption opt) {
 		sDrawScreen(mousex, mousey, f);
 		OpenGL.glPushMatrix();
 		if (this.fixGuiScale)
 			OpenGL.glScalef(guiScaleX(), guiScaleY(), 1f);
 		final Area gp = getAbsolute();
 		final Point p = getMouseAbsolute();
-		dispatchDraw(gp, p, f, opacity);
+		dispatchDraw(gp, p, f, opacity, opt!=null ? opt : new RenderOption());
 		OpenGL.glPopMatrix();
 	}
 
 	@Override
 	public void drawScreen(final int mousex, final int mousey, final float f) {
-		drawScreen(mousex, mousey, f, getOpacity());
+		drawScreen(mousex, mousey, f, getOpacity(), null);
 	}
 
 	/**
@@ -351,7 +353,7 @@ public class WFrame extends GuiScreen implements WCommon, WContainer<WCommon> {
 	}
 
 	@Override
-	protected void mouseClicked(final int x, final int y, final int button) {
+	protected void mouseClicked(final int x, final int y, final int button) throws IOException {
 		this.mousebutton.addButton(button);
 		this.event.updateDoubleClick();
 		final Area gp = getAbsolute();
@@ -360,17 +362,17 @@ public class WFrame extends GuiScreen implements WCommon, WContainer<WCommon> {
 		sMouseClicked(x, y, button);
 	}
 
-	protected void sMouseClicked(final int x, final int y, final int button) {
+	protected void sMouseClicked(final int x, final int y, final int button) throws IOException {
 		super.mouseClicked(x, y, button);
 	}
 
 	@Override
-	protected void mouseMovedOrUp(final int x, final int y, final int button) {
-		sMouseMovedOrUp(x, y, button);
+	protected void mouseReleased(final int x, final int y, final int button) {
+		sMouseReleased(x, y, button);
 	}
 
-	protected void sMouseMovedOrUp(final int x, final int y, final int button) {
-		super.mouseMovedOrUp(x, y, button);
+	protected void sMouseReleased(final int x, final int y, final int button) {
+		super.mouseReleased(x, y, button);
 	}
 
 	@Override
@@ -522,7 +524,7 @@ public class WFrame extends GuiScreen implements WCommon, WContainer<WCommon> {
 	}
 
 	@Override
-	public void handleMouseInput() {
+	public void handleMouseInput() throws IOException {
 		final int i = Mouse.getEventDWheel();
 		if (i!=0) {
 			final Area gp = getAbsolute();
@@ -532,16 +534,16 @@ public class WFrame extends GuiScreen implements WCommon, WContainer<WCommon> {
 		sHandleMouseInput();
 	}
 
-	protected void sHandleMouseInput() {
+	protected void sHandleMouseInput() throws IOException {
 		super.handleMouseInput();
 	}
 
 	@Override
-	public void handleKeyboardInput() {
+	public void handleKeyboardInput() throws IOException {
 		sHandleKeyboardInput();
 	}
 
-	protected void sHandleKeyboardInput() {
+	protected void sHandleKeyboardInput() throws IOException {
 		super.handleKeyboardInput();
 	}
 
@@ -694,14 +696,20 @@ public class WFrame extends GuiScreen implements WCommon, WContainer<WCommon> {
 		getContentPane().onInit(this.event, pgp, p);
 	}
 
-	@Override
+	@Deprecated
 	@OverridablePoint
 	public void draw(@Nonnull final WEvent ev, @Nonnull final Area pgp, @Nonnull final Point p, final float frame, final float popacity) {
 	}
 
-	protected void dispatchDraw(final @Nonnull Area pgp, final @Nonnull Point p, final float frame, final float popacity) {
-		draw(this.event, pgp, p, frame, popacity);
-		getContentPane().draw(this.event, pgp, p, frame, popacity);
+	@Override
+	@OverridablePoint
+	public void draw(@Nonnull final WEvent ev, @Nonnull final Area pgp, @Nonnull final Point p, final float frame, final float popacity, @Nonnull final RenderOption opt) {
+		draw(ev, pgp, p, frame, popacity);
+	}
+
+	protected void dispatchDraw(final @Nonnull Area pgp, final @Nonnull Point p, final float frame, final float popacity, @Nonnull final RenderOption opt) {
+		draw(this.event, pgp, p, frame, popacity, opt);
+		getContentPane().draw(this.event, pgp, p, frame, popacity, opt);
 	}
 
 	@Override
@@ -798,8 +806,7 @@ public class WFrame extends GuiScreen implements WCommon, WContainer<WCommon> {
 		final boolean a = getContentPane().onClosing(this.event, pgp, p);
 		final boolean b = this.isDispatchClosable = this.isDispatchClosable||onClosing(this.event, pgp, p);
 		return a&&b;
-	}
-
+}
 	@Override
 	@OverridablePoint
 	public @Nullable WCommon top(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p) {

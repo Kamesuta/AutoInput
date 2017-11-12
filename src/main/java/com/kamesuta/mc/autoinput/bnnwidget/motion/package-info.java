@@ -7,5 +7,5 @@
  * <br>
  * {@link com.kamesuta.mc.autoinput.bnnwidget.motion.Easing Easing}はEasingの基本インターフェイスです。
  */
-@com.kamesuta.mc.autoinput.NonNullByDefault
+@com.kamesuta.mc.NonNullByDefault
 package com.kamesuta.mc.autoinput.bnnwidget.motion;

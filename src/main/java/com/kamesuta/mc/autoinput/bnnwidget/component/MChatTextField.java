@@ -16,6 +16,7 @@ import com.kamesuta.mc.autoinput.bnnwidget.position.Area;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Point;
 import com.kamesuta.mc.autoinput.bnnwidget.position.R;
 import com.kamesuta.mc.autoinput.bnnwidget.render.OpenGL;
+import com.kamesuta.mc.autoinput.bnnwidget.render.RenderOption;
 
 import net.minecraft.client.gui.GuiTextField;
 
@@ -112,7 +113,7 @@ public class MChatTextField extends WBase {
 	}
 
 	@Override
-	public void draw(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final float frame, final float opacity) {
+	public void draw(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final float frame, final float opacity, final @Nonnull RenderOption opt) {
 		final Area a = getGuiPosition(pgp);
 		updateArea(a);
 		final int x = this.t.xPosition;
@@ -280,7 +281,7 @@ public class MChatTextField extends WBase {
 	}
 
 	public int func_146197_a(final int p_146197_1_, final int p_146197_2_, final boolean p_146197_3_) {
-		return this.t.func_146197_a(p_146197_1_, p_146197_2_, p_146197_3_);
+		return this.t.getNthWordFromPosWS(p_146197_1_, p_146197_2_, p_146197_3_);
 	}
 
 	public void moveCursorBy(final int p_146182_1_) {
@@ -418,7 +419,7 @@ public class MChatTextField extends WBase {
 	 */
 	protected class MGuiTextField extends GuiTextField {
 		public MGuiTextField() {
-			super(font(), 0, 0, 0, 0);
+			super(1, font(), 0, 0, 0, 0);
 		}
 
 		@Override

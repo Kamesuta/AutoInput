@@ -9,9 +9,9 @@ import com.kamesuta.mc.autoinput.bnnwidget.position.Area;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Point;
 import com.kamesuta.mc.autoinput.bnnwidget.position.R;
 import com.kamesuta.mc.autoinput.reference.Names;
+import com.mojang.realmsclient.gui.ChatFormatting;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.EnumChatFormatting;
 
 public class KeyButton extends Button {
 
@@ -49,7 +49,7 @@ public class KeyButton extends Button {
 			this.controllable.setControllable(null);
 		} else if (abs.pointInside(p)&&button==0) {
 			this.reception = true;
-			setText(EnumChatFormatting.WHITE+"> "+EnumChatFormatting.YELLOW+this.text+EnumChatFormatting.WHITE+" <");
+			setText(ChatFormatting.WHITE+"> "+ChatFormatting.YELLOW+this.text+ChatFormatting.WHITE+" <");
 			this.controllable.setControllable(this);
 			return true;
 		}

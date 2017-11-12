@@ -5,5 +5,5 @@
  * <br>
  * {@link com.kamesuta.mc.autoinput.bnnwidget.var.VCommon VCommon}はすべての値の基本インターフェイスです。
  */
-@com.kamesuta.mc.autoinput.NonNullByDefault
+@com.kamesuta.mc.NonNullByDefault
 package com.kamesuta.mc.autoinput.bnnwidget.var;

@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 
 import com.kamesuta.mc.autoinput.bnnwidget.position.Area;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Point;
+import com.kamesuta.mc.autoinput.bnnwidget.render.RenderOption;
 import com.kamesuta.mc.autoinput.bnnwidget.render.WGui;
 
 /**
@@ -23,9 +24,15 @@ public class WComponent extends WGui implements WCommon {
 	public void onInit(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p) {
 	}
 
-	@Override
+	@Deprecated
 	@OverridablePoint
 	public void draw(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final float frame, final float popacity) {
+	}
+
+	@Override
+	@OverridablePoint
+	public void draw(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final float frame, final float popacity, final @Nonnull RenderOption opt) {
+		draw(ev, pgp, p, frame, popacity);
 	}
 
 	@Override
