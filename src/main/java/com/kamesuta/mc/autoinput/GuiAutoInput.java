@@ -13,7 +13,8 @@ import com.kamesuta.mc.autoinput.bnnwidget.component.MLabel;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Area;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Coord;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Point;
-import com.kamesuta.mc.autoinput.bnnwidget.position.RArea;
+import com.kamesuta.mc.autoinput.bnnwidget.position.R;
+import com.kamesuta.mc.autoinput.bnnwidget.render.OpenGL;
 import com.kamesuta.mc.autoinput.guiparts.Button;
 import com.kamesuta.mc.autoinput.guiparts.IGuiControllable;
 import com.kamesuta.mc.autoinput.guiparts.KeyButton;
@@ -48,12 +49,12 @@ public class GuiAutoInput extends WFrame implements IGuiControllable {
 	}
 
 	@Override
-	protected void init() {
-		add(new WPanel(new RArea()) {
+	protected void initWidget() {
+		add(new WPanel(new R()) {
 			@Override
 			protected void initWidget() {
-				add(new WPanel(new RArea(Coord.pleft(.5f), Coord.ptop(.5f), Coord.width(200), Coord.height(170))) {
-					protected final RArea gp = new RArea(Coord.pleft(-.5f), Coord.ptop(-.5f), Coord.pwidth(1f), Coord.pheight(1f));
+				add(new WPanel(new R(Coord.pleft(.5f), Coord.ptop(.5f), Coord.width(200), Coord.height(170))) {
+					protected final R gp = new R(Coord.pleft(-.5f), Coord.ptop(-.5f), Coord.pwidth(1f), Coord.pheight(1f));
 
 					@Override
 					public Area getGuiPosition(final Area pgp) {
@@ -77,7 +78,7 @@ public class GuiAutoInput extends WFrame implements IGuiControllable {
 
 					@Override
 					protected void initWidget() {
-						add(new MLabel(new RArea(Coord.left(5), Coord.top(5), Coord.right(5), Coord.height(20)), I18n.format(Names.Gui.TITLE)) {
+						add(new MLabel(new R(Coord.left(5), Coord.top(5), Coord.right(5), Coord.height(20))) {
 							{
 								setScaleWidth(2f);
 								setScaleHeight(2f);
@@ -88,15 +89,15 @@ public class GuiAutoInput extends WFrame implements IGuiControllable {
 							public void draw(final WEvent ev, final Area pgp, final Point p, final float frame, final float opacity) {
 								final Area a = getGuiPosition(pgp);
 
-								glColor4f(1, 1, 1, 0.3f);
+								OpenGL.glColor4f(1, 1, 1, 0.3f);
 								RenderHelper.startShape();
-								drawRect(a);
+								draw(a);
 
 								super.draw(ev, pgp, p, frame, opacity);
 							}
-						});
+						}.setText(I18n.format(Names.Gui.TITLE)));
 
-						add(new MLabel(new RArea(Coord.left(5), Coord.top(30), Coord.right(5), Coord.height(15)), I18n.format(Names.Gui.SETTINGS)) {
+						add(new MLabel(new R(Coord.left(5), Coord.top(30), Coord.right(5), Coord.height(15))) {
 							{
 								setColor(0xffffff);
 							}
@@ -107,20 +108,20 @@ public class GuiAutoInput extends WFrame implements IGuiControllable {
 
 								glColor4f(1, 1, 1, 0.3f);
 								RenderHelper.startShape();
-								drawRect(a);
+								draw(a);
 
 								super.draw(ev, pgp, p, frame, opacity);
 							}
-						});
+						}.setText(I18n.format(Names.Gui.SETTINGS)));
 
 						int t = 50;
 						for (final GuiKeyBinding binding : keys) {
-							add(new ToggleButton(new RArea(Coord.left(5), Coord.top(t), Coord.right(200/3+5), Coord.height(20)), binding));
-							add(new KeyButton(new RArea(Coord.left(200/3*2+5), Coord.top(t), Coord.right(5), Coord.height(20)), binding, GuiAutoInput.this));
+							add(new ToggleButton(new R(Coord.left(5), Coord.top(t), Coord.right(200/3+5), Coord.height(20)), binding));
+							add(new KeyButton(new R(Coord.left(200/3*2+5), Coord.top(t), Coord.right(5), Coord.height(20)), binding, GuiAutoInput.this));
 							t += 25;
 						}
 
-						add(new Button(new RArea(Coord.left(60), Coord.top(120), Coord.right(60), Coord.height(20)), I18n.format(Names.Gui.OPTIONS)) {
+						add(new Button(new R(Coord.left(60), Coord.top(120), Coord.right(60), Coord.height(20))) {
 
 							@Override
 							public boolean mouseClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
@@ -132,9 +133,9 @@ public class GuiAutoInput extends WFrame implements IGuiControllable {
 								}
 								return false;
 							}
-						});
+						}.setText(I18n.format(Names.Gui.OPTIONS)));
 
-						add(new Button(new RArea(Coord.left(70), Coord.top(145), Coord.right(70), Coord.height(20)), I18n.format(Names.Gui.DONE)) {
+						add(new Button(new R(Coord.left(70), Coord.top(145), Coord.right(70), Coord.height(20))) {
 
 							@Override
 							public boolean mouseClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
@@ -145,7 +146,7 @@ public class GuiAutoInput extends WFrame implements IGuiControllable {
 								}
 								return false;
 							}
-						});
+						}.setText(I18n.format(Names.Gui.DONE)));
 					}
 				});
 			}
@@ -153,26 +154,15 @@ public class GuiAutoInput extends WFrame implements IGuiControllable {
 	}
 
 	@Override
-	protected void mouseClicked(final int x, final int y, final int button) {
-		if (isControllable()) {
-			super.mouseClicked(x, y, button);
-		} else {
-			this.mousebutton = button;
-			final Area gp = getAbsolute();
-			final Point p = getMouseAbsolute();
-			this.gui.mouseClicked(this.event, gp, p, button);
-		}
+	protected void sMouseClicked(final int x, final int y, final int button) {
+		if (isControllable())
+			super.sMouseClicked(x, y, button);
 	}
 
 	@Override
-	protected void keyTyped(final char c, final int keycode) {
-		if (isControllable()) {
-			super.keyTyped(c, keycode);
-		} else {
-			final Area gp = getAbsolute();
-			final Point p = getMouseAbsolute();
-			this.gui.keyTyped(this.event, gp, p, c, keycode);
-		}
+	protected void sKeyTyped(final char c, final int keycode) {
+		if (isControllable())
+			super.sKeyTyped(c, keycode);
 	}
 
 	@Override

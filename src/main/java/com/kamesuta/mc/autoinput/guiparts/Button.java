@@ -2,19 +2,20 @@ package com.kamesuta.mc.autoinput.guiparts;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import com.kamesuta.mc.autoinput.bnnwidget.WButton;
 import com.kamesuta.mc.autoinput.bnnwidget.WEvent;
+import com.kamesuta.mc.autoinput.bnnwidget.component.MButton;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Area;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Point;
 import com.kamesuta.mc.autoinput.bnnwidget.position.R;
+import com.kamesuta.mc.autoinput.bnnwidget.render.OpenGL;
 import com.kamesuta.mc.autoinput.widget.RenderHelper;
 
-public class Button extends WButton {
+public class Button extends MButton {
 
 	protected int textcolor = 0xffffff;
 
-	public Button(final R position, final String text) {
-		super(position, text);
+	public Button(final R position) {
+		super(position);
 	}
 
 	public void setTextColor(final int color) {
@@ -38,7 +39,9 @@ public class Button extends WButton {
 		}
 		glPushMatrix();
 		glTranslated(a.x1()+a.w()/2, a.y1()+a.h()/2, 0);
-		drawStringC(this.text, 0, 0, 0, 0, getTextColor());
+		//drawString(this.text, 0, 0, 0, 0, getTextColor());
+		OpenGL.glColorRGB(getTextColor());
+		drawString(this.text, Area.abs(0, 0, 0, 0), Align.CENTER, VerticalAlign.MIDDLE, false);
 		glPopMatrix();
 	}
 }

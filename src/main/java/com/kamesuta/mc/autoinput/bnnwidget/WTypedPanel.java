@@ -1,38 +1,70 @@
 package com.kamesuta.mc.autoinput.bnnwidget;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Queues;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Area;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Point;
 import com.kamesuta.mc.autoinput.bnnwidget.position.R;
 
+/**
+ * {@link W}型のコンポーネントを含むことのできるパネルです。
+ * @param <W> コンポーネントが含むことのできる型
+ * @author TeamFruit
+ */
 public abstract class WTypedPanel<W extends WCommon> extends WBase implements WContainer<W> {
-	private final List<W> widgets = new ArrayList<W>();
-	protected final Deque<W> removelist = new ArrayDeque<W>();
+	private final @Nonnull List<W> widgets = Lists.newArrayList();
+	/**
+	 * このキューに追加されたコンポーネントは逐次、消去されます。
+	 */
+	protected final @Nonnull Deque<W> removelist = Queues.newArrayDeque();
+	/**
+	 * ウィジェットが初期化されたかどうかを保持します。
+	 * <p>
+	 * これは{@link #initWidget()}を一度だけ呼び出すのに役立ちます。
+	 */
+	protected boolean initialized;
+	/**
+	 * このキューに追加されたタスクは逐次、実行されます。
+	 */
+	protected @Nonnull Deque<Runnable> eventQueue = Queues.newArrayDeque();
 
-	public WTypedPanel(final R position) {
+	public WTypedPanel(final @Nonnull R position) {
 		super(position);
 	}
 
+	/**
+	 * 安全なタイミングで実行されるタスクを追加します
+	 * <p>
+	 * 安全に追加、消去などを行うことに使用します。
+	 * @param doRun タスク
+	 */
+	public void invokeLater(final @Nullable Runnable doRun) {
+		if (doRun!=null)
+			this.eventQueue.push(doRun);
+	}
+
 	@Override
-	public List<W> getContainer() {
+	public @Nonnull List<W> getContainer() {
 		return this.widgets;
 	}
 
 	@Override
-	public boolean add(final W widget) {
+	public boolean add(final @Nonnull W widget) {
 		final boolean b = getContainer().add(widget);
 		widget.onAdded();
 		return b;
 	}
 
 	@Override
-	public boolean remove(final W widget) {
+	public boolean remove(final @Nonnull W widget) {
 		if (widget.onCloseRequest()) {
 			getContainer().remove(widget);
 			return true;
@@ -44,28 +76,44 @@ public abstract class WTypedPanel<W extends WCommon> extends WBase implements WC
 
 	@Override
 	public void onAdded() {
-		initWidget();
+		if (!this.initialized) {
+			initWidget();
+			this.initialized = true;
+		}
 	}
 
+	/**
+	 * ウィジェットを初期化します。
+	 * <p>
+	 * このメソッドはGUIの初期化時に一度だけ呼び出されます。
+	 * <p>
+	 * オーバーライドしてGUIの構築を行いましょう。
+	 */
+	@OverridablePoint
 	protected void initWidget() {
 	}
 
 	@Override
-	public void onInit(final WEvent ev, final Area pgp, final Point p) {
+	public void onInit(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p) {
 		final Area gp = getGuiPosition(pgp);
 		for (final W widget : getContainer())
 			widget.onInit(ev, gp, p);
 	}
 
 	@Override
-	public void draw(final WEvent ev, final Area pgp, final Point p, final float frame, final float opacity) {
+	public void draw(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final float frame, final float popacity) {
 		final Area gp = getGuiPosition(pgp);
+		final float opacity = getGuiOpacity(popacity);
 		for (final W widget : getContainer())
 			widget.draw(ev, gp, p, frame, opacity);
 	}
 
 	@Override
-	public void update(final WEvent ev, final Area pgp, final Point p) {
+	public void update(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p) {
+		Runnable doRun;
+		while ((doRun = this.eventQueue.poll())!=null)
+			doRun.run();
+
 		final Area gp = getGuiPosition(pgp);
 		for (final W widget : getContainer())
 			widget.update(ev, gp, p);
@@ -79,7 +127,7 @@ public abstract class WTypedPanel<W extends WCommon> extends WBase implements WC
 	}
 
 	@Override
-	public boolean keyTyped(final WEvent ev, final Area pgp, final Point p, final char c, final int keycode) {
+	public boolean keyTyped(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final char c, final int keycode) {
 		final Area gp = getGuiPosition(pgp);
 		for (final ListIterator<W> itr = getContainer().listIterator(getContainer().size()); itr.hasPrevious();) {
 			final W widget = itr.previous();
@@ -90,7 +138,7 @@ public abstract class WTypedPanel<W extends WCommon> extends WBase implements WC
 	}
 
 	@Override
-	public boolean mouseScrolled(final WEvent ev, final Area pgp, final Point p, final int scroll) {
+	public boolean mouseScrolled(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final int scroll) {
 		final Area gp = getGuiPosition(pgp);
 		for (final ListIterator<W> itr = getContainer().listIterator(getContainer().size()); itr.hasPrevious();) {
 			final W widget = itr.previous();
@@ -101,7 +149,7 @@ public abstract class WTypedPanel<W extends WCommon> extends WBase implements WC
 	}
 
 	@Override
-	public boolean mouseMoved(final WEvent ev, final Area pgp, final Point p, final int button) {
+	public boolean mouseMoved(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final int button) {
 		final Area gp = getGuiPosition(pgp);
 		for (final ListIterator<W> itr = getContainer().listIterator(getContainer().size()); itr.hasPrevious();) {
 			final W widget = itr.previous();
@@ -112,7 +160,7 @@ public abstract class WTypedPanel<W extends WCommon> extends WBase implements WC
 	}
 
 	@Override
-	public boolean mouseClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
+	public boolean mouseClicked(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final int button) {
 		final Area gp = getGuiPosition(pgp);
 		for (final ListIterator<W> itr = getContainer().listIterator(getContainer().size()); itr.hasPrevious();) {
 			final W widget = itr.previous();
@@ -123,7 +171,7 @@ public abstract class WTypedPanel<W extends WCommon> extends WBase implements WC
 	}
 
 	@Override
-	public boolean mouseDragged(final WEvent ev, final Area pgp, final Point p, final int button, final long time) {
+	public boolean mouseDragged(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final int button, final long time) {
 		final Area gp = getGuiPosition(pgp);
 		for (final ListIterator<W> itr = getContainer().listIterator(getContainer().size()); itr.hasPrevious();) {
 			final W widget = itr.previous();
@@ -134,7 +182,7 @@ public abstract class WTypedPanel<W extends WCommon> extends WBase implements WC
 	}
 
 	@Override
-	public boolean mouseReleased(final WEvent ev, final Area pgp, final Point p, final int button) {
+	public boolean mouseReleased(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final int button) {
 		final Area gp = getGuiPosition(pgp);
 		for (final ListIterator<W> itr = getContainer().listIterator(getContainer().size()); itr.hasPrevious();) {
 			final W widget = itr.previous();
@@ -158,7 +206,7 @@ public abstract class WTypedPanel<W extends WCommon> extends WBase implements WC
 	}
 
 	@Override
-	public boolean onClosing(final WEvent ev, final Area pgp, final Point p) {
+	public boolean onClosing(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p) {
 		final Area gp = getGuiPosition(pgp);
 		boolean closable = true;
 		for (final Iterator<W> itr = this.removelist.iterator(); itr.hasNext();) {
@@ -173,13 +221,13 @@ public abstract class WTypedPanel<W extends WCommon> extends WBase implements WC
 	}
 
 	@Override
-	public WCommon top(final WEvent ev, final Area pgp, final Point point) {
+	public @Nullable WCommon top(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point point) {
 		final Area gp = getGuiPosition(pgp);
 		if (gp.pointInside(point)) {
 			WCommon topwidget = null;
 			for (final W widget : getContainer()) {
 				final WCommon top = widget.top(ev, gp, point);
-				if (top != null)
+				if (top!=null)
 					topwidget = top;
 			}
 			return topwidget;

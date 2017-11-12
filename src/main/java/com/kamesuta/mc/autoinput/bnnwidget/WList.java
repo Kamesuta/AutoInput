@@ -4,39 +4,60 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Area;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Point;
 import com.kamesuta.mc.autoinput.bnnwidget.position.R;
-import com.kamesuta.mc.autoinput.widget.NotifyCollections.IModCount;
+import com.kamesuta.mc.autoinput.bnnwidget.util.NotifyCollections.IModCount;
 
+/**
+ * リストを監視し、ウィジェットに反映します。
+ * @param <T> 監視リストの型
+ * @param <W> 対応ウィジェット型
+ * @author TeamFruit
+ */
 public abstract class WList<T, W extends WCommon> extends WTypedPanel<W> {
-	protected IModCount<T> check;
+	/**
+	 * 監視するリスト
+	 */
+	protected @Nonnull IModCount<T> check;
 
-	public WList(final R position, final IModCount<T> check) {
+	public WList(final @Nonnull R position, final @Nonnull IModCount<T> check) {
 		super(position);
 		this.check = check;
 	}
 
-	public void setList(final IModCount<T> check) {
+	/**
+	 * 監視するリストを設定します
+	 * @param check 監視するリスト
+	 */
+	public void setList(final @Nonnull IModCount<T> check) {
 		this.check = check;
 	}
 
+	/**
+	 * 追加操作はサポートされていません
+	 */
 	@Override
-	public boolean add(final W widget) {
+	public boolean add(final @Nonnull W widget) {
 		return false;
 	}
 
+	/**
+	 * 消去操作はサポートされていません
+	 */
 	@Override
-	public boolean remove(final W widget) {
+	public boolean remove(final @Nonnull W widget) {
 		return false;
 	}
 
 	int cachedModCount = -1;
 
 	@Override
-	public void update(final WEvent ev, final Area pgp, final Point p) {
+	public void update(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p) {
 		final int mod = this.check.getModCount();
 		if (mod!=this.cachedModCount) {
 			this.cachedModCount = mod;
@@ -45,10 +66,14 @@ public abstract class WList<T, W extends WCommon> extends WTypedPanel<W> {
 		super.update(ev, pgp, p);
 	}
 
-	private final Map<W, T> toT = Maps.newHashMap();
-	private final Map<T, W> toW = Maps.newHashMap();
-	private final Map<T, Integer> Tindex = Maps.newHashMap();
-	private final Set<W> cws = Sets.newHashSet();
+	private final @Nonnull Map<W, T> toT = Maps.newHashMap();
+	private final @Nonnull Map<T, W> toW = Maps.newHashMap();
+	private final @Nonnull Map<T, Integer> Tindex = Maps.newHashMap();
+	private final @Nonnull Set<W> cws = Sets.newHashSet();
+
+	/**
+	 * 監視リストの変更を反映します
+	 */
 	public void update() {
 		final List<W> ws = getContainer();
 		this.cws.clear();
@@ -86,11 +111,40 @@ public abstract class WList<T, W extends WCommon> extends WTypedPanel<W> {
 		}
 	}
 
-	protected abstract W createWidget(T t, int i);
+	/**
+	 * 監視リストの要素をもとに対応コンポーネントを生成します
+	 * @param t 監視リストの要素
+	 * @param i インデックス
+	 * @return 対応コンポーネント
+	 */
+	protected abstract @Nonnull W createWidget(@Nonnull T t, int i);
 
-	protected void onAdded(final T t, final W w) {}
+	/**
+	 * 対応コンポーネントが追加される際に呼ばれます
+	 * @param t 監視リストの要素
+	 * @param w 対応コンポーネント
+	 */
+	@OverridablePoint
+	protected void onAdded(final @Nonnull T t, final @Nonnull W w) {
+	}
 
-	protected void onRemove(final T t, final W w) {}
+	/**
+	 * 対応コンポーネントが消去される際に呼ばれます
+	 * @param t 監視リストの要素
+	 * @param w 対応コンポーネント
+	 */
+	@OverridablePoint
+	protected void onRemove(final @Nonnull T t, final @Nonnull W w) {
+	}
 
-	protected void onMoved(final T t, final W w, final int from, final int to) {}
+	/**
+	 * 対応コンポーネントが移動される際に呼ばれます
+	 * @param t 監視リストの要素
+	 * @param w 対応コンポーネント
+	 * @param from 移動前のインデックス
+	 * @param to 移動後のインデックス
+	 */
+	@OverridablePoint
+	protected void onMoved(final @Nonnull T t, final @Nonnull W w, final int from, final int to) {
+	}
 }

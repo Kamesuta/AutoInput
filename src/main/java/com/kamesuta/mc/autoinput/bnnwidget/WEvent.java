@@ -1,67 +1,91 @@
 package com.kamesuta.mc.autoinput.bnnwidget;
 
-import java.util.ArrayList;
+import java.awt.Toolkit;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.Validate;
+import javax.annotation.Nonnull;
 
+import org.lwjgl.util.Timer;
+
+import com.kamesuta.mc.autoinput.bnnwidget.render.WRenderer;
+
+import cpw.mods.fml.common.eventhandler.EventBus;
+
+/**
+ * いくつかのデータをGUI全体で共有するのに役立ちます。
+ * <p>
+ * イベントバスを持ち、独自のイベントを発生させることができます。
+ * <p>
+ * これはGUIで管理される単一のインスタンスです。イベントはGUI単位で管理されます。
+ * @see EventBus
+ * @author TeamFruit
+ */
 public class WEvent {
-	public final Map<String, Object> data;
-	public final Map<String, List<WActionListener>> events;
+	/**
+	 * デフォルトのダブルクリック間隔です。
+	 */
+	public static final int DefaultMultiClickInterval = 500;
 
-	public WEvent() {
+	/**
+	 * ユーザー設定のダブルクリック間隔を取得します。
+	 * @return ユーザー設定のダブルクリック間隔
+	 */
+	public static int getUserMultiClickInterval() {
+		final Object o = Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval");
+		if (o instanceof Integer)
+			return (Integer) o;
+		return DefaultMultiClickInterval;
+	}
+
+	/**
+	 * このイベントインスタンスを管理しているGUIです。
+	 */
+	public final @Nonnull WFrame owner;
+	/**
+	 * データを保持するのに役立ちます。
+	 */
+	public final @Nonnull Map<String, Object> data;
+	/**
+	 * GUIで管理されるイベントバスです。
+	 */
+	public final @Nonnull EventBus bus;
+	/**
+	 * ユーザー設定のダブルクリック間隔を取得します。
+	 */
+	public final int multiClickInterval;
+	private Timer lastClickedTime = new Timer();
+	private boolean isDoubleClicked;
+
+	public WEvent(final @Nonnull WFrame owner) {
+		this.owner = owner;
 		this.data = new HashMap<String, Object>();
-		this.events = new HashMap<String, List<WActionListener>>();
+		this.bus = new EventBus();
+		this.multiClickInterval = getUserMultiClickInterval();
 	}
 
-	public void addEventListener(final String command, final WActionListener listener) {
-		Validate.notNull(command);
-		Validate.notNull(listener);
-		final List<WActionListener> actions = getActionsOrCreate(command);
-		actions.add(listener);
-		this.events.put(command, actions);
+	/**
+	 * 現在の画面がこのGUIであるかを確認します。
+	 * @return
+	 */
+	public boolean isCurrent() {
+		return WRenderer.mc.currentScreen==this.owner;
 	}
 
-	public List<WActionListener> removeEvent(final String command) {
-		return this.events.remove(command);
+	/**
+	 * このクリックがダブルクリックかどうか
+	 * @return このクリックがダブルクリックの場合true
+	 */
+	public boolean isDoubleClick() {
+		return this.isDoubleClicked;
 	}
 
-	public boolean removeActionListener(final String command, final WActionListener listener) {
-		Validate.notNull(command);
-		Validate.notNull(listener);
-		final List<WActionListener> actions = this.events.get(command);
-		if (actions != null)
-			return actions.remove(listener);
-		return false;
-	}
-
-	protected List<WActionListener> getActionsOrCreate(final String command) {
-		final List<WActionListener> actions = this.events.get(command);
-		if (actions != null)
-			return actions;
-		else
-			return new ArrayList<WActionListener>();
-	}
-
-	public void eventDispatch(final String command, final Object... params) {
-		if (command != null) {
-			final List<WActionListener> actions = this.events.get(command);
-			actionsDispatch(actions, command, params);
+	protected void updateDoubleClick() {
+		if (this.lastClickedTime.getTime()*1000<this.multiClickInterval)
+			this.isDoubleClicked = true;
+		else {
+			this.lastClickedTime.reset();
+			this.isDoubleClicked = false;
 		}
-	}
-
-	protected void actionsDispatch(final List<WActionListener> actions, final String command, final Object... params) {
-		if (actions != null) {
-			for (final WActionListener action : actions) {
-				actionDispatch(action, command, params);
-			}
-		}
-	}
-
-	protected void actionDispatch(final WActionListener action, final String command, final Object... params) {
-		if (action != null)
-			action.actionPerformed(command, params);
 	}
 }

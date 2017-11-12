@@ -1,113 +1,125 @@
 package com.kamesuta.mc.autoinput.bnnwidget.position;
 
-public class Coord implements R {
-	private final float coord;
-	public CoordSide side;
-	public CoordType type;
+import javax.annotation.Nonnull;
 
-	public Coord(final float coord, final CoordSide side, final CoordType type) {
+import com.kamesuta.mc.autoinput.bnnwidget.var.V;
+import com.kamesuta.mc.autoinput.bnnwidget.var.VCommon;
+
+/**
+ * 相対範囲を構成する相対座標
+ *
+ * @author TeamFruit
+ */
+public class Coord {
+	private @Nonnull VCommon coord;
+	private @Nonnull CoordSide side;
+
+	public Coord(final @Nonnull VCommon coord, final @Nonnull CoordSide side) {
 		this.coord = coord;
 		this.side = side;
-		this.type = type;
 	}
 
 	public float get() {
-		return this.coord;
+		return this.coord.get();
 	}
 
 	public float getAbsCoord(final float abslength) {
-		return this.type.calc(abslength, get());
+		return this.coord.getAbsCoord(0, abslength);
 	}
 
 	@Override
-	public String toString() {
-		return String.format("Coord [coord=%s, side=%s, type=%s]", get(), this.side, this.type);
+	public @Nonnull String toString() {
+		return String.format("Coord [coord=%s, side=%s]", get(), getSide());
 	}
 
-	public float base(final Area a) {
-		return this.side.base(a, this);
+	public float base(final @Nonnull Area a) {
+		return getSide().base(a, this);
 	}
 
-	public float next(final Area a, final Coord base) {
-		return this.side.next(a, base, this);
+	public float next(final @Nonnull Area a, final @Nonnull Coord base) {
+		return getSide().next(a, base, this);
+	}
+
+	public @Nonnull CoordSide getSide() {
+		return this.side;
 	}
 
 	public static enum CoordSide {
 		Top(true, 1) {
 			@Override
-			public float base(final Area a, final Coord c) {
-				return a.y1() + c.getAbsCoord(a.h());
+			public float base(final @Nonnull Area a, final @Nonnull Coord c) {
+				return a.y1()+c.getAbsCoord(a.h());
 			}
 
 			@Override
-			public float next(final Area a, final Coord base, final Coord c) {
-				if (c.side.isAbs)
-					return a.y1() + c.getAbsCoord(a.h());
+			public float next(final @Nonnull Area a, final @Nonnull Coord base, final @Nonnull Coord c) {
+				if (c.getSide().isAbs)
+					return a.y1()+c.getAbsCoord(a.h());
 				else
-					return base.base(a) + base.side.calc * c.getAbsCoord(a.h());
+					return base.base(a)+base.getSide().calc*c.getAbsCoord(a.h());
 			}
 		},
 		Left(true, 1) {
 			@Override
-			public float base(final Area a, final Coord c) {
-				return a.x1() + c.getAbsCoord(a.w());
+			public float base(final @Nonnull Area a, final @Nonnull Coord c) {
+				return a.x1()+c.getAbsCoord(a.w());
 			}
 
 			@Override
-			public float next(final Area a, final Coord base, final Coord c) {
-				if (c.side.isAbs)
-					return a.x1() + c.getAbsCoord(a.w());
+			public float next(final @Nonnull Area a, final @Nonnull Coord base, final @Nonnull Coord c) {
+				if (c.getSide().isAbs)
+					return a.x1()+c.getAbsCoord(a.w());
 				else
-					return base.base(a) + base.side.calc * c.getAbsCoord(a.w());
+					return base.base(a)+base.getSide().calc*c.getAbsCoord(a.w());
 			}
 		},
 		Bottom(true, -1) {
 			@Override
-			public float base(final Area a, final Coord c) {
-				return a.y2() - c.getAbsCoord(a.h());
+			public float base(final @Nonnull Area a, final @Nonnull Coord c) {
+				return a.y2()-c.getAbsCoord(a.h());
 			}
 
 			@Override
-			public float next(final Area a, final Coord base, final Coord c) {
-				if (c.side.isAbs)
-					return a.y2() - c.getAbsCoord(a.h());
+			public float next(final @Nonnull Area a, final @Nonnull Coord base, final @Nonnull Coord c) {
+				if (c.getSide().isAbs)
+					return a.y2()-c.getAbsCoord(a.h());
 				else
-					return base.base(a) + base.side.calc * c.getAbsCoord(a.h());
+					return base.base(a)+base.getSide().calc*c.getAbsCoord(a.h());
 			}
 		},
 		Right(true, -1) {
 			@Override
-			public float base(final Area a, final Coord c) {
-				return a.x2() - c.getAbsCoord(a.w());
+			public float base(final @Nonnull Area a, final @Nonnull Coord c) {
+				return a.x2()-c.getAbsCoord(a.w());
 			}
 
 			@Override
-			public float next(final Area a, final Coord base, final Coord c) {
-				if (c.side.isAbs)
-					return a.x2() - c.getAbsCoord(a.w());
+			public float next(final @Nonnull Area a, final @Nonnull Coord base, final @Nonnull Coord c) {
+				if (c.getSide().isAbs)
+					return a.x2()-c.getAbsCoord(a.w());
 				else
-					return base.base(a) + base.side.calc * c.getAbsCoord(a.w());
+					return base.base(a)+base.getSide().calc*c.getAbsCoord(a.w());
 			}
 		},
 		Width(false, 1) {
 			@Override
-			public float next(final Area a, final Coord base, final Coord c) {
-				return base.side.next(a, base, c);
+			public float next(final @Nonnull Area a, final @Nonnull Coord base, final @Nonnull Coord c) {
+				return base.getSide().next(a, base, c);
 			}
 		},
 		Height(false, 1) {
 			@Override
-			public float next(final Area a, final Coord base, final Coord c) {
-				return base.side.next(a, base, c);
+			public float next(final @Nonnull Area a, final @Nonnull Coord base, final @Nonnull Coord c) {
+				return base.getSide().next(a, base, c);
 			}
 		},
 		;
 
-		public float base(final Area a, final Coord c) {
+		public float base(final @Nonnull Area a, final @Nonnull Coord c) {
 			return 0;
 		}
 
-		public float next(final Area a, final Coord base, final Coord c) {
+		public float next(final @Nonnull Area a, final @Nonnull Coord base, final @Nonnull Coord c) {
 			return 0;
 		}
 
@@ -120,81 +132,75 @@ public class Coord implements R {
 		}
 	}
 
-	public static enum CoordType {
-		Absolute {
-			@Override
-			public float calc(final float all, final float c) {
-				return c;
-			}
-		},
-		Percent {
-			@Override
-			public float calc(final float all, final float c) {
-				return all * c;
-			}
-		},
-		;
-
-		public abstract float calc(float all, float f);
+	public static @Nonnull Coord top(final @Nonnull VCommon n) {
+		return new Coord(n, CoordSide.Top);
 	}
 
-	public static Coord top(final float n) {
-		return new Coord(n, CoordSide.Top, CoordType.Absolute);
+	public static @Nonnull Coord top(final float n) {
+		return top(V.a(n));
 	}
 
-	public static Coord ptop(final float n) {
-		return new Coord(n, CoordSide.Top, CoordType.Percent);
+	public static @Nonnull Coord ptop(final float n) {
+		return top(V.p(n));
 	}
 
-	public static Coord left(final float n) {
-		return new Coord(n, CoordSide.Left, CoordType.Absolute);
+	public static @Nonnull Coord left(final @Nonnull VCommon n) {
+		return new Coord(n, CoordSide.Left);
 	}
 
-	public static Coord pleft(final float n) {
-		return new Coord(n, CoordSide.Left, CoordType.Percent);
+	public static @Nonnull Coord left(final float n) {
+		return left(V.a(n));
 	}
 
-	public static Coord bottom(final float n) {
-		return new Coord(n, CoordSide.Bottom, CoordType.Absolute);
+	public static @Nonnull Coord pleft(final float n) {
+		return left(V.p(n));
 	}
 
-	public static Coord pbottom(final float n) {
-		return new Coord(n, CoordSide.Bottom, CoordType.Percent);
+	public static @Nonnull Coord bottom(final @Nonnull VCommon n) {
+		return new Coord(n, CoordSide.Bottom);
 	}
 
-	public static Coord right(final float n) {
-		return new Coord(n, CoordSide.Right, CoordType.Absolute);
+	public static @Nonnull Coord bottom(final float n) {
+		return bottom(V.a(n));
 	}
 
-	public static Coord pright(final float n) {
-		return new Coord(n, CoordSide.Right, CoordType.Percent);
+	public static @Nonnull Coord pbottom(final float n) {
+		return bottom(V.p(n));
 	}
 
-	public static Coord width(final float n) {
-		return new Coord(n, CoordSide.Width, CoordType.Absolute);
+	public static @Nonnull Coord right(final @Nonnull VCommon n) {
+		return new Coord(n, CoordSide.Right);
 	}
 
-	public static Coord pwidth(final float n) {
-		return new Coord(n, CoordSide.Width, CoordType.Percent);
+	public static @Nonnull Coord right(final float n) {
+		return right(V.a(n));
 	}
 
-	public static Coord height(final float n) {
-		return new Coord(n, CoordSide.Height, CoordType.Absolute);
+	public static @Nonnull Coord pright(final float n) {
+		return right(V.p(n));
 	}
 
-	public static Coord pheight(final float n) {
-		return new Coord(n, CoordSide.Height, CoordType.Percent);
+	public static @Nonnull Coord width(final @Nonnull VCommon n) {
+		return new Coord(n, CoordSide.Width);
 	}
 
-	@Deprecated
-	@Override
-	public boolean isVaild() {
-		return this.side.isAbs;
+	public static @Nonnull Coord width(final float n) {
+		return width(V.a(n));
 	}
 
-	@Deprecated
-	@Override
-	public Area getAbsolute(final Area parent) {
-		return new RArea(new Coord(this.side.base(parent, this), this.side, this.type)).getAbsolute(parent);
+	public static @Nonnull Coord pwidth(final float n) {
+		return width(V.p(n));
+	}
+
+	public static @Nonnull Coord height(final @Nonnull VCommon n) {
+		return new Coord(n, CoordSide.Height);
+	}
+
+	public static @Nonnull Coord height(final float n) {
+		return height(V.a(n));
+	}
+
+	public static @Nonnull Coord pheight(final float n) {
+		return height(V.p(n));
 	}
 }

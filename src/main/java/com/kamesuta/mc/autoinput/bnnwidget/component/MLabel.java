@@ -1,81 +1,264 @@
 package com.kamesuta.mc.autoinput.bnnwidget.component;
 
-import static org.lwjgl.opengl.GL11.*;
+import java.awt.Color;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.kamesuta.mc.autoinput.bnnwidget.OverridablePoint;
 import com.kamesuta.mc.autoinput.bnnwidget.WBase;
 import com.kamesuta.mc.autoinput.bnnwidget.WEvent;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Area;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Point;
 import com.kamesuta.mc.autoinput.bnnwidget.position.R;
-import com.kamesuta.mc.autoinput.widget.RenderHelper;
+import com.kamesuta.mc.autoinput.bnnwidget.render.OpenGL;
+import com.kamesuta.mc.autoinput.bnnwidget.render.WRenderer;
 
+/**
+ * ラベルです
+ *
+ * @author TeamFruit
+ */
 public class MLabel extends WBase {
+	/**
+	 * テキストの色
+	 */
 	protected int textcolor = 14737632;
-	protected String text;
+	/**
+	 * テキスト
+	 */
+	protected @Nonnull String text = "";
+	/**
+	 * 影を付けるかどうか
+	 */
+	protected boolean shadow;
+	/**
+	 * 透かし文字
+	 */
+	protected @Nullable String watermark;
+	/**
+	 * 透かし文字色
+	 */
+	protected int watermarkcolor = 0x777777;
+	/**
+	 * 横方向のテキスト位置
+	 */
+	protected @Nonnull Align align = Align.CENTER;
+	/**
+	 * 縦方向のテキスト位置
+	 */
+	protected @Nonnull VerticalAlign valign = VerticalAlign.MIDDLE;
 
-	public MLabel(final R position, final String text) {
+	public MLabel(final @Nonnull R position) {
 		super(position);
-		this.text = text;
 	}
 
-	public void setColor(final int color) {
+	/**
+	 * 横方向のテキスト位置を設定
+	 * @param align 横方向のテキスト位置
+	 * @return this
+	 */
+	public @Nonnull MLabel setAlign(final @Nonnull Align align) {
+		this.align = align;
+		return this;
+	}
+
+	/**
+	 * 横方向のテキスト位置
+	 * @return 横方向のテキスト位置
+	 */
+	public @Nonnull Align getAlign() {
+		return this.align;
+	}
+
+	/**
+	 * 縦方向のテキスト位置を設定
+	 * @param valign 縦方向のテキスト位置
+	 * @return this
+	 */
+	public @Nonnull MLabel setVerticalAlign(final @Nonnull VerticalAlign valign) {
+		this.valign = valign;
+		return this;
+	}
+
+	/**
+	 * 縦方向のテキスト位置
+	 * @return 縦方向のテキスト位置
+	 */
+	public @Nonnull VerticalAlign getVerticalAlign() {
+		return this.valign;
+	}
+
+	/**
+	 * 透かし文字を設定します
+	 * @param watermark 透かし文字
+	 * @return this
+	 */
+	public @Nonnull MLabel setWatermark(final @Nullable String watermark) {
+		this.watermark = watermark;
+		return this;
+	}
+
+	/**
+	 * 透かし文字
+	 * @return 透かし文字
+	 */
+	public @Nullable String getWatermark() {
+		return this.watermark;
+	}
+
+	/**
+	 * 透かし文字の色を設定します
+	 * @param watermark 透かし文字の色
+	 * @return this
+	 */
+	public @Nonnull MLabel setWatermarkColor(final int watermark) {
+		this.watermarkcolor = watermark;
+		return this;
+	}
+
+	/**
+	 * 透かし文字の色
+	 * @return 透かし文字の色
+	 */
+	public int getWatermarkColor() {
+		return this.watermarkcolor;
+	}
+
+	/**
+	 * 影を付けるかどうかを設定します
+	 * @param b 影を付ける場合true
+	 * @return this
+	 */
+	public @Nonnull MLabel setShadow(final boolean b) {
+		this.shadow = b;
+		return this;
+	}
+
+	/**
+	 * 影を付けるかどうか
+	 * @return 影を付ける場合true
+	 */
+	public boolean isShadow() {
+		return this.shadow;
+	}
+
+	/**
+	 * テキストの色を設定します
+	 * @param color テキストの色
+	 * @return this
+	 */
+	public @Nonnull MLabel setColor(final int color) {
 		this.textcolor = color;
+		return this;
 	}
 
+	/**
+	 * テキストの色
+	 * @return テキストの色
+	 */
 	public int getColor() {
 		return this.textcolor;
 	}
 
-	public void setText(final String s) {
-		if (StringUtils.equals(s, getText())) {
-			return;
-		}
+	/**
+	 * テキストを設定します
+	 * @param p_146180_1_
+	 */
+	public @Nonnull MLabel setText(final @Nonnull String s) {
+		if (StringUtils.equals(s, getText()))
+			return this;
 		final String oldText = getText();
 		this.text = s;
 		onTextChanged(oldText);
+		return this;
 	}
 
-	public String getText() {
+	/**
+	 * テキスト
+	 * @return テキスト
+	 */
+	public @Nonnull String getText() {
 		return this.text;
 	}
 
-	protected void onTextChanged(final String oldText) {
+	/**
+	 * テキストが変更された場合に呼び出されます。
+	 * @param oldText 変更前のテキスト
+	 */
+	@OverridablePoint
+	protected void onTextChanged(final @Nonnull String oldText) {
 	}
 
 	@Override
-	public void draw(final WEvent ev, final Area pgp, final Point p, final float frame, final float opacity) {
-		final Area out = getGuiPosition(pgp);
-		drawText(out);
+	public void draw(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final float frame, final float popacity) {
+		drawText(ev, getGuiPosition(pgp), p, frame, getGuiOpacity(popacity));
 	}
 
 	protected float wscale = 1f;
 
-	public void setScaleWidth(final float f) {
+	/**
+	 * 幅の倍率を設定します
+	 * @param f 幅の倍率
+	 * @return this
+	 */
+	public @Nonnull MLabel setScaleWidth(final float f) {
 		this.wscale = f;
+		return this;
 	}
 
-	public float getScaleWidth() {
+	/**
+	 * 幅の倍率
+	 * @return f 幅の倍率
+	 */
+	@OverridablePoint
+	public float getScaleWidth(final @Nonnull Area a) {
 		return this.wscale;
 	}
 
 	protected float hscale = 1f;
 
-	public void setScaleHeight(final float f) {
+	/**
+	 * 高さの倍率を設定します
+	 * @param f 高さの倍率
+	 * @return this
+	 */
+	public @Nonnull MLabel setScaleHeight(final float f) {
 		this.hscale = f;
+		return this;
 	}
 
-	public float getScaleHeight() {
+	/**
+	 * 高さの倍率
+	 * @return f 高さの倍率
+	 */
+	@OverridablePoint
+	public float getScaleHeight(final @Nonnull Area a) {
 		return this.hscale;
 	}
 
-	protected void drawText(final Area a) {
-		glPushMatrix();
-		glTranslated(a.x1()+a.w()/2, a.y1() + a.h()/2 , 0);
-		glScaled(getScaleWidth(), getScaleHeight(), 1);
-		RenderHelper.startTexture();
-		drawStringC(getText(), 0, 0, 0, 0, getColor());
-		glPopMatrix();
+	/**
+	 * テキストを描画します
+	 * @param a 絶対座標
+	 * @param opacity 絶対透明度
+	 */
+	protected void drawText(final @Nonnull WEvent ev, final @Nonnull Area a, final @Nonnull Point p, final float frame, final float opacity) {
+		OpenGL.glPushMatrix();
+		OpenGL.glTranslated(a.x1()+a.w()/2, a.y1()+a.h()/2, 0);
+		OpenGL.glScaled(getScaleWidth(a), getScaleHeight(a), 1);
+		OpenGL.glTranslated(-(a.x1()+a.w()/2), -(a.y1()+a.h()/2), 0);
+		WRenderer.startTexture();
+		final Color c = new Color(getColor());
+		OpenGL.glColor4i(c.getRed(), c.getGreen(), c.getBlue(), (int) Math.max(4, opacity*c.getAlpha()));
+		drawString(getText(), a, getAlign(), getVerticalAlign(), isShadow());
+		final String watermark = getWatermark();
+		if (watermark!=null&&!StringUtils.isEmpty(watermark)&&StringUtils.isEmpty(getText())) {
+			final Color w = new Color(getWatermarkColor());
+			OpenGL.glColor4i(w.getRed(), w.getGreen(), w.getBlue(), (int) Math.max(4, opacity*c.getAlpha()));
+			drawString(watermark, a, getAlign(), getVerticalAlign(), isShadow());
+		}
+		OpenGL.glPopMatrix();
 	}
 }

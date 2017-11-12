@@ -1,63 +1,89 @@
 package com.kamesuta.mc.autoinput.bnnwidget;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.kamesuta.mc.autoinput.bnnwidget.position.Area;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Point;
+import com.kamesuta.mc.autoinput.bnnwidget.render.WGui;
 
+/**
+ * 実装を含まない、コンポーネントの基盤です。
+ *
+ * @author TeamFruit
+ */
 public class WComponent extends WGui implements WCommon {
 	@Override
-	public void onAdded() {}
+	@OverridablePoint
+	public void onAdded() {
+	}
 
 	@Override
-	public void onInit(final WEvent ev, final Area pgp, final Point p) {}
+	@OverridablePoint
+	public void onInit(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p) {
+	}
 
 	@Override
-	public void draw(final WEvent ev, final Area pgp, final Point p, final float frame, final float opacity) {}
+	@OverridablePoint
+	public void draw(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final float frame, final float popacity) {
+	}
 
 	@Override
-	public void update(final WEvent ev, final Area pgp, final Point p) {}
+	@OverridablePoint
+	public void update(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p) {
+	}
 
 	@Override
-	public boolean keyTyped(final WEvent ev, final Area pgp, final Point p, final char c, final int keycode) {
+	@OverridablePoint
+	public boolean keyTyped(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final char c, final int keycode) {
 		return false;
 	}
 
 	@Override
-	public boolean mouseScrolled(final WEvent ev, final Area pgp, final Point p, final int scroll) {
+	@OverridablePoint
+	public boolean mouseScrolled(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final int scroll) {
 		return false;
 	}
 
 	@Override
-	public boolean mouseMoved(final WEvent ev, final Area pgp, final Point p, final int button) {
+	@OverridablePoint
+	public boolean mouseMoved(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final int button) {
 		return false;
 	}
 
 	@Override
-	public boolean mouseClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
+	@OverridablePoint
+	public boolean mouseClicked(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final int button) {
 		return false;
 	}
 
 	@Override
-	public boolean mouseDragged(final WEvent ev, final Area pgp, final Point p, final int button, final long time) {
+	@OverridablePoint
+	public boolean mouseDragged(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final int button, final long time) {
 		return false;
 	}
 
 	@Override
-	public boolean mouseReleased(final WEvent ev, final Area pgp, final Point mouse, final int button) {
+	@OverridablePoint
+	public boolean mouseReleased(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final int button) {
 		return false;
 	}
 
 	@Override
+	@OverridablePoint
 	public boolean onCloseRequest() {
 		return true;
 	}
 
 	@Override
-	public boolean onClosing(final WEvent ev, final Area pgp, final Point mouse) {
+	@OverridablePoint
+	public boolean onClosing(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p) {
 		return true;
 	}
 
 	@Override
-	public WCommon top(final WEvent ev, final Area pgp, final Point point) {
+	@OverridablePoint
+	public @Nullable WCommon top(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p) {
 		return null;
 	}
 }

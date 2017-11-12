@@ -19,21 +19,17 @@ public class KeyButton extends Button {
 	private final IGuiControllable controllable;
 	private boolean reception;
 
-	public KeyButton(final R position, final String text, final GuiKeyBinding keyBinding, final IGuiControllable controllable) {
-		super(position, text);
+	public KeyButton(final R position, final GuiKeyBinding keyBinding, final IGuiControllable controllable) {
+		super(position);
 		this.keyBinding = keyBinding;
 		this.controllable = controllable;
-
-	}
-
-	public KeyButton(final R position, final GuiKeyBinding keyBinding, final IGuiControllable controllable) {
-		this(position, getName(keyBinding.getKeyCode()), keyBinding, controllable);
+		setText(getName(keyBinding.getKeyCode()));
 	}
 
 	@Override
 	public boolean keyTyped(final WEvent ev, final Area pgp, final Point p, final char c, final int keycode) {
 		if (this.reception) {
-			this.keyBinding.setKeyCode((keycode==Keyboard.KEY_ESCAPE) ? Keyboard.KEY_NONE : keycode);
+			this.keyBinding.setKeyCode(keycode==Keyboard.KEY_ESCAPE ? Keyboard.KEY_NONE : keycode);
 			setText(getName(keycode));
 			this.reception = false;
 			this.controllable.setControllable(null);
@@ -61,7 +57,7 @@ public class KeyButton extends Button {
 	}
 
 	public static String getName(final int code) {
-		if (code<0) {
+		if (code<0)
 			switch (code) {
 				case -100:
 					return I18n.format(Names.Keys.KEY0);
@@ -72,8 +68,7 @@ public class KeyButton extends Button {
 				default:
 					return Mouse.getButtonName(code+100);
 			}
-		} else {
-			return Keyboard.getKeyName((code==1) ? Keyboard.KEY_NONE : code);
-		}
+		else
+			return Keyboard.getKeyName(code==1 ? Keyboard.KEY_NONE : code);
 	}
 }

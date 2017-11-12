@@ -1,74 +1,134 @@
 package com.kamesuta.mc.autoinput.bnnwidget.component;
 
-import static org.lwjgl.opengl.GL11.*;
+import java.util.Set;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.collect.Sets;
+import com.kamesuta.mc.autoinput.bnnwidget.OverridablePoint;
 import com.kamesuta.mc.autoinput.bnnwidget.WBase;
 import com.kamesuta.mc.autoinput.bnnwidget.WEvent;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Area;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Point;
 import com.kamesuta.mc.autoinput.bnnwidget.position.R;
+import com.kamesuta.mc.autoinput.bnnwidget.render.OpenGL;
 
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.util.ChatAllowedCharacters;
 
+/**
+ * Minecraftの{@link GuiTextField}のウィジェットラッパーです。
+ *
+ * @author TeamFruit
+ */
 public class MChatTextField extends WBase {
-	protected final GuiTextField t;
+	/**
+	 * テキストフィールド
+	 */
+	protected final @Nonnull MGuiTextField t;
 
-	protected String watermark;
-	protected String allowedCharacters;
+	/**
+	 * 透かし文字
+	 */
+	protected @Nullable String watermark;
+	/**
+	 * 透かし文字色
+	 */
+	protected int watermarkcolor = 0x777777;
+	/**
+	 * 入力可能文字
+	 */
+	protected @Nonnull CharacterFilter filter = CharacterFilter.VanillaChatFilter.create();
 
-	public MChatTextField(final R position) {
+	public MChatTextField(final @Nonnull R position) {
 		super(position);
-		this.t = new GuiTextField(font(), 0, 0, 0, 0);
+		this.t = new MGuiTextField();
 	}
 
+	/**
+	 * 入力可能かどうか
+	 * @param c 文字
+	 * @return 入力可能の場合true
+	 */
 	public boolean canAddChar(final char c) {
-		if (StringUtils.isEmpty(this.allowedCharacters))
-			return true;
-		else if (!ChatAllowedCharacters.isAllowedCharacter(c))
-			return true;
-		else
-			return this.allowedCharacters.indexOf(c) >= 0;
+		return getFilter().checkCharacter(c);
 	}
 
-	public MChatTextField setWatermark(final String watermark) {
+	/**
+	 * 透かし文字を設定します
+	 * @param watermark 透かし文字
+	 * @return this
+	 */
+	public @Nonnull MChatTextField setWatermark(final @Nullable String watermark) {
 		this.watermark = watermark;
 		return this;
 	}
 
-	public String getWatermark() {
+	/**
+	 * 透かし文字
+	 * @return 透かし文字
+	 */
+	public @Nullable String getWatermark() {
 		return this.watermark;
 	}
 
-	public MChatTextField setAllowedCharacters(final String s) {
-		this.allowedCharacters = s;
+	/**
+	 * 透かし文字の色を設定します
+	 * @param watermark 透かし文字の色
+	 * @return this
+	 */
+	public @Nonnull MChatTextField setWatermarkColor(final int watermark) {
+		this.watermarkcolor = watermark;
 		return this;
 	}
 
+	/**
+	 * 透かし文字の色
+	 * @return 透かし文字の色
+	 */
+	public int getWatermarkColor() {
+		return this.watermarkcolor;
+	}
+
+	/**
+	 * 入力可能文字を設定します
+	 * @param filter 入力可能文字
+	 * @return this
+	 */
+	public @Nonnull MChatTextField setFilter(final @Nonnull CharacterFilter filter) {
+		this.filter = filter;
+		return this;
+	}
+
+	/**
+	 * 入力可能文字
+	 * @return 入力可能文字
+	 */
+	public @Nonnull CharacterFilter getFilter() {
+		return this.filter;
+	}
+
 	@Override
-	public void draw(final WEvent ev, final Area pgp, final Point p, final float frame, final float opacity) {
+	public void draw(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final float frame, final float opacity) {
 		final Area a = getGuiPosition(pgp);
+		updateArea(a);
 		final int x = this.t.xPosition;
 		final int y = this.t.yPosition;
 		final int w = this.t.width;
 		final int h = this.t.height;
 		this.t.xPosition = 1;
 		this.t.yPosition = 1;
-		this.t.width = (int)a.w() - 2;
-		this.t.height = (int) a.h() - 2;
-		glPushMatrix();
-		glTranslatef(a.x1(), a.y1(), 0f);
+		this.t.width = (int) a.w()-2;
+		this.t.height = (int) a.h()-2;
+		OpenGL.glPushMatrix();
+		OpenGL.glTranslatef(a.x1(), a.y1(), 0f);
 
 		this.t.drawTextBox();
-		if (!StringUtils.isEmpty(this.watermark) && StringUtils.isEmpty(getText()) && !isFocused()) {
-			final int l = getEnableBackgroundDrawing() ? this.t.xPosition + 4 : this.t.xPosition;
-			final int i1 = getEnableBackgroundDrawing() ? this.t.yPosition + (this.t.height - 8) / 2 : this.t.yPosition;
-			font().drawStringWithShadow(this.watermark, l, i1, 0x777777);
-		}
 
-		glPopMatrix();
+		OpenGL.glPopMatrix();
 		this.t.xPosition = x;
 		this.t.yPosition = y;
 		this.t.width = w;
@@ -77,30 +137,53 @@ public class MChatTextField extends WBase {
 
 	@Override
 	public void onAdded() {
-		updateArea(new Area(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE));
+		updateArea(Area.size(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE));
 	}
 
+	private boolean drag;
+	private int drag_x = -1;
+
 	@Override
-	public boolean mouseClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
+	public boolean mouseClicked(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final int button) {
 		final Area a = getGuiPosition(pgp);
 		updateArea(a);
-		final boolean b = isFocused();
-		if (button == 1 && a.pointInside(p))
+		if (button==1&&a.pointInside(p))
 			setText("");
-		this.t.mouseClicked((int) p.x(), (int) p.y(), button);
-		if (b!=isFocused()) onFocusChanged();
-		return isFocused();
+		this.drag = true;
+		this.drag_x = (int) p.x();
+		this.t.mouseClicked(this.drag_x, (int) p.y(), button);
+		return a.pointInside(p);
 	}
 
 	@Override
-	public void update(final WEvent ev, final Area pgp, final Point p) {
+	public boolean mouseReleased(final WEvent ev, final Area pgp, final Point p, final int button) {
+		this.drag = false;
+		return false;
+	}
+
+	@Override
+	public boolean mouseMoved(final WEvent ev, final Area pgp, final Point p, final int button) {
+		final Area a = getGuiPosition(pgp);
+		if (this.drag) {
+			updateArea(a);
+			this.t.mouseClicked(this.drag_x, (int) p.y(), button);
+			final int start = this.t.getCursorPosition();
+			this.t.mouseClicked((int) p.x(), (int) p.y(), button);
+			final int end = this.t.getCursorPosition();
+			this.t.setCursorPosition(end);
+			this.t.setSelectionPos(start);
+		}
+		return a.pointInside(p);
+	}
+
+	@Override
+	public void update(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p) {
 		this.t.updateCursorCounter();
 	}
 
 	@Override
-	public boolean keyTyped(final WEvent ev, final Area pgp, final Point p, final char c, final int keycode) {
-		if (canAddChar(c))
-			this.t.textboxKeyTyped(c, keycode);
+	public boolean keyTyped(final @Nonnull WEvent ev, final @Nonnull Area pgp, final @Nonnull Point p, final char c, final int keycode) {
+		this.t.textboxKeyTyped(c, keycode);
 		return isFocused();
 	}
 
@@ -110,7 +193,11 @@ public class MChatTextField extends WBase {
 		return true;
 	}
 
-	protected void updateArea(final Area a) {
+	/**
+	 * ウィジェットの絶対座標をテキストフィールドに反映します。
+	 * @param a 絶対座標
+	 */
+	protected void updateArea(final @Nonnull Area a) {
 		final Area b = a.child(1, 1, -1, -1);
 		this.t.xPosition = (int) b.x1();
 		this.t.yPosition = (int) b.y1();
@@ -118,32 +205,62 @@ public class MChatTextField extends WBase {
 		this.t.height = (int) b.h();
 	}
 
-	public void setText(final String p_146180_1_) {
-		final String old = getText();
+	/**
+	 * テキストを設定します
+	 * @param p_146180_1_
+	 */
+	public void setText(final @Nonnull String p_146180_1_) {
 		this.t.setText(p_146180_1_);
-		onTextChanged(old);
 	}
 
-	protected void onTextChanged(final String oldText) {
+	/**
+	 * フィルターを無視してテキストを設定します
+	 * @param p_146180_1_
+	 */
+	public void setTextByPassFilter(final @Nonnull String p_146180_1_) {
+		this.t.setTextByPassFilter(p_146180_1_);
 	}
 
-	public String getText() {
+	/**
+	 * テキストが変更された場合に呼び出されます。
+	 * @param oldText 変更前のテキスト
+	 */
+	@OverridablePoint
+	protected void onTextChanged(final @Nonnull String oldText) {
+	}
+
+	/**
+	 * テキスト
+	 * @return テキスト
+	 */
+	public @Nonnull String getText() {
 		return this.t.getText();
 	}
 
-	public String getSelectedText() {
+	/**
+	 * 選択中のテキスト
+	 * @return
+	 */
+	public @Nonnull String getSelectedText() {
 		return this.t.getSelectedText();
 	}
 
-	public void writeText(final String p_146191_1_) {
-		final String old = getText();
+	public void writeText(final @Nonnull String p_146191_1_) {
 		this.t.writeText(p_146191_1_);
-		onTextChanged(old);
+	}
+
+	public void writeTextByPassFilter(final @Nonnull String p_146191_1_) {
+		this.t.writeTextByPassFilter(p_146191_1_);
 	}
 
 	@Override
-	public boolean equals(final Object obj) {
+	public boolean equals(final @Nullable Object obj) {
 		return this.t.equals(obj);
+	}
+
+	@Override
+	public int hashCode() {
+		return this.t.hashCode();
 	}
 
 	public void deleteWords(final int p_146177_1_) {
@@ -151,9 +268,7 @@ public class MChatTextField extends WBase {
 	}
 
 	public void deleteFromCursor(final int p_146175_1_) {
-		final String old = getText();
 		this.t.deleteFromCursor(p_146175_1_);
-		onTextChanged(old);
 	}
 
 	public int getNthWordFromCursor(final int p_146187_1_) {
@@ -185,14 +300,12 @@ public class MChatTextField extends WBase {
 	}
 
 	@Override
-	public String toString() {
+	public @Nullable String toString() {
 		return this.t.toString();
 	}
 
 	public void setMaxStringLength(final int p_146203_1_) {
-		final String old = getText();
 		this.t.setMaxStringLength(p_146203_1_);
-		onTextChanged(old);
 	}
 
 	public int getMaxStringLength() {
@@ -203,36 +316,67 @@ public class MChatTextField extends WBase {
 		return this.t.getCursorPosition();
 	}
 
+	/**
+	 * デフォルトのMinecraftテキストフィールドデザインを描画するかどうか
+	 * @return デフォルトのMinecraftテキストフィールドデザインを描画する場合はtrue
+	 */
 	public boolean getEnableBackgroundDrawing() {
 		return this.t.getEnableBackgroundDrawing();
 	}
 
-	public void setEnableBackgroundDrawing(final boolean p_146185_1_) {
-		this.t.setEnableBackgroundDrawing(p_146185_1_);
+	/**
+	 * デフォルトのMinecraftテキストフィールドデザインを描画するかどうかを設定します
+	 * @param b デフォルトのMinecraftテキストフィールドデザインを描画する場合はtrue
+	 */
+	public void setEnableBackgroundDrawing(final boolean b) {
+		this.t.setEnableBackgroundDrawing(b);
 	}
 
-	public void setTextColor(final int p_146193_1_) {
-		this.t.setTextColor(p_146193_1_);
+	/**
+	 * テキストの色を設定します
+	 * @param color テキストの色
+	 */
+	public void setTextColor(final int color) {
+		this.t.setTextColor(color);
 	}
 
-	public void setDisabledTextColour(final int p_146204_1_) {
-		this.t.setDisabledTextColour(p_146204_1_);
+	/**
+	 * 無効状態のテキストの色を指定します
+	 * @param color 無効状態のテキストの色
+	 */
+	public void setDisabledTextColour(final int color) {
+		this.t.setDisabledTextColour(color);
 	}
 
-	public void setFocused(final boolean p_146195_1_) {
-		if (p_146195_1_!=isFocused()) onFocusChanged();
-		this.t.setFocused(p_146195_1_);
+	/**
+	 * このフィールドを選択中かどうかを設定します
+	 * @param b このフィールドを選択中の場合はtrue
+	 */
+	public void setFocused(final boolean b) {
+		this.t.setFocused(b);
 	}
 
+	/**
+	 * フォーカス状態が変更された場合に呼ばれます
+	 */
+	@OverridablePoint
 	protected void onFocusChanged() {
 	}
 
+	/**
+	 * このフィールドを選択中かどうか
+	 * @return このフィールドを選択中の場合はtrue
+	 */
 	public boolean isFocused() {
 		return this.t.isFocused();
 	}
 
-	public void setEnabled(final boolean p_146184_1_) {
-		this.t.setEnabled(p_146184_1_);
+	/**
+	 * テキストフィールドが有効かどうかを設定します
+	 * @param b テキストフィールドが有効な場合true
+	 */
+	public void setEnabled(final boolean b) {
+		this.t.setEnabled(b);
 	}
 
 	public int getSelectionEnd() {
@@ -251,11 +395,257 @@ public class MChatTextField extends WBase {
 		this.t.setCanLoseFocus(p_146205_1_);
 	}
 
+	/**
+	 * テキストフィールドを表示するかどうか
+	 * @return テキストフィールドを表示する場合true
+	 */
 	public boolean getVisible() {
 		return this.t.getVisible();
 	}
 
-	public void setVisible(final boolean p_146189_1_) {
-		this.t.setVisible(p_146189_1_);
+	/**
+	 * テキストフィールドを表示するかどうかを設定します
+	 * @param b テキストフィールドを表示する場合true
+	 */
+	public void setVisible(final boolean b) {
+		this.t.setVisible(b);
+	}
+
+	/**
+	 * GuiTextFieldにフックが加わったクラスです
+	 *
+	 * @author TeamFruit
+	 */
+	protected class MGuiTextField extends GuiTextField {
+		public MGuiTextField() {
+			super(font(), 0, 0, 0, 0);
+		}
+
+		@Override
+		public void setText(final @Nullable String text) {
+			if (text!=null)
+				setTextByPassFilter(filerAllowedCharacters(text));
+		}
+
+		public void setTextByPassFilter(final @Nonnull String text) {
+			final @Nonnull String s = getText();
+			super.setText(text);
+			onTextChanged(s, getText());
+		}
+
+		@Override
+		public void deleteFromCursor(final int p_146175_1_) {
+			final String s = getText();
+			super.deleteFromCursor(p_146175_1_);
+			onTextChanged(s, getText());
+		}
+
+		@Override
+		public void writeText(final @Nullable String text) {
+			if (text!=null)
+				writeTextByPassFilter(filerAllowedCharacters(text));
+		}
+
+		public void writeTextByPassFilter(final @Nonnull String text) {
+			final @Nonnull String s = getText();
+			writeText0(text);
+			onTextChanged(s, getText());
+		}
+
+		private void writeText0(final @Nonnull String newtext) {
+			String s1 = "";
+			final int cpos = getCursorPosition();
+			final int send = getSelectionEnd();
+			final String text = getText();
+			final int textlen = text.length();
+			final int i = cpos<send ? cpos : send;
+			final int j = cpos<send ? send : cpos;
+			final int k = getMaxStringLength()-textlen-(i-send);
+
+			if (textlen>0)
+				s1 = s1+text.substring(0, i);
+
+			int l;
+
+			if (k<newtext.length()) {
+				s1 = s1+newtext.substring(0, k);
+				l = k;
+			} else {
+				s1 = s1+newtext;
+				l = newtext.length();
+			}
+
+			if (textlen>0&&j<textlen)
+				s1 = s1+text.substring(j);
+
+			super.setText(s1);
+			moveCursorBy(i-getSelectionEnd()+l);
+		}
+
+		@Override
+		public void setMaxStringLength(final int p_146203_1_) {
+			final String s = getText();
+			super.setMaxStringLength(p_146203_1_);
+			onTextChanged(s, getText());
+		}
+
+		protected @Nonnull String filerAllowedCharacters(final @Nonnull String text) {
+			final StringBuilder stringbuilder = new StringBuilder();
+			final int i = text.length();
+
+			for (int j = 0; j<i; ++j) {
+				final char c0 = text.charAt(j);
+
+				if (canAddChar(c0))
+					stringbuilder.append(c0);
+			}
+
+			return stringbuilder.toString();
+		}
+
+		protected void onTextChanged(final @Nonnull String oldText, final @Nonnull String newText) {
+			if (!StringUtils.equals(oldText, newText))
+				MChatTextField.this.onTextChanged(oldText);
+		}
+
+		@Override
+		public void setFocused(final boolean p_146195_1_) {
+			final boolean b = isFocused();
+			super.setFocused(p_146195_1_);
+			onFocusChanged(b, isFocused());
+		}
+
+		protected void onFocusChanged(final boolean oldFocus, final boolean newFocus) {
+			if (oldFocus!=newFocus)
+				MChatTextField.this.onFocusChanged();
+		}
+
+		@Override
+		public void drawTextBox() {
+			super.drawTextBox();
+			if (!StringUtils.isEmpty(getWatermark())&&StringUtils.isEmpty(getText())&&!isFocused()) {
+				final int l = getEnableBackgroundDrawing() ? this.xPosition+4 : this.xPosition;
+				final int i1 = getEnableBackgroundDrawing() ? this.yPosition+(this.height-8)/2 : this.yPosition;
+				font().drawStringWithShadow(getWatermark(), l, i1, MChatTextField.this.watermarkcolor);
+			}
+		}
+
+		@Override
+		public @Nonnull String toString() {
+			return "TextField [text="+getText()+"]";
+		}
+	}
+
+	public static abstract class CharacterFilter {
+		/** Array of the special characters that are allowed in any text drawing of Minecraft. */
+		public static final char[] allowedCharacters = new char[] { '/', '\n', '\r', '\t', '\u0000', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', ':' };
+
+		/**
+		 * Filter string by only keeping those characters for which isAllowedCharacter() returns true.
+		 */
+		public String filerAllowedCharacters(final String str) {
+			final StringBuilder stringbuilder = new StringBuilder();
+			final char[] achar = str.toCharArray();
+			final int i = achar.length;
+
+			for (int j = 0; j<i; ++j) {
+				final char c0 = achar[j];
+
+				if (checkCharacter(c0))
+					stringbuilder.append(c0);
+			}
+
+			return stringbuilder.toString();
+		}
+
+		public abstract boolean checkCharacter(char ch);
+
+		public static abstract class AbstractWhiteListFilter extends CharacterFilter {
+			@Override
+			public final boolean checkCharacter(final char ch) {
+				return isAllowedCharacter(ch);
+			}
+
+			public abstract boolean isAllowedCharacter(char ch);
+		}
+
+		public static class WhiteListFilter extends AbstractWhiteListFilter {
+			private final @Nonnull Set<Character> whitelist;
+
+			public WhiteListFilter(@Nonnull final Set<Character> whitelist) {
+				this.whitelist = whitelist;
+			}
+
+			public static @Nonnull WhiteListFilter create() {
+				return new WhiteListFilter(Sets.<Character> newHashSet());
+			}
+
+			public static @Nonnull WhiteListFilter createFromString(final String filter) {
+				return new WhiteListFilter(Sets.<Character> newHashSet(ArrayUtils.toObject(filter.toCharArray())));
+			}
+
+			public @Nonnull Set<Character> getWhitelist() {
+				return this.whitelist;
+			}
+
+			@Override
+			public boolean isAllowedCharacter(final char ch) {
+				for (final char c : this.whitelist)
+					if (c==ch)
+						return true;
+				return false;
+			}
+		}
+
+		public static abstract class AbstractBlackListFilter extends CharacterFilter {
+			@Override
+			public final boolean checkCharacter(final char ch) {
+				return !isDeniedCharacter(ch);
+			}
+
+			public abstract boolean isDeniedCharacter(char ch);
+		}
+
+		public static class BlackListFilter extends AbstractBlackListFilter {
+			private final @Nonnull Set<Character> blacklist;
+
+			public BlackListFilter(@Nonnull final Set<Character> blacklist) {
+				this.blacklist = blacklist;
+			}
+
+			public static @Nonnull BlackListFilter create() {
+				return new BlackListFilter(Sets.<Character> newHashSet());
+			}
+
+			public static @Nonnull BlackListFilter createFromString(final String filter) {
+				return new BlackListFilter(Sets.<Character> newHashSet(ArrayUtils.toObject(filter.toCharArray())));
+			}
+
+			public @Nonnull Set<Character> getBlacklist() {
+				return this.blacklist;
+			}
+
+			@Override
+			public boolean isDeniedCharacter(final char ch) {
+				for (final char c : this.blacklist)
+					if (c==ch)
+						return true;
+				return false;
+			}
+		}
+
+		public static class VanillaChatFilter extends BlackListFilter {
+			public VanillaChatFilter(@Nonnull final Set<Character> blacklist) {
+				super(blacklist);
+				for (char i = 0; i<32; i++)
+					blacklist.add(i);
+				blacklist.add((char) 127);
+				blacklist.add((char) 167);
+			}
+
+			public static @Nonnull VanillaChatFilter create() {
+				return new VanillaChatFilter(Sets.<Character> newHashSet());
+			}
+		}
 	}
 }
