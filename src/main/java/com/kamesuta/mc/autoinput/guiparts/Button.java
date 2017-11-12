@@ -41,7 +41,9 @@ public class Button extends MButton {
 		glTranslated(a.x1()+a.w()/2, a.y1()+a.h()/2, 0);
 		//drawString(this.text, 0, 0, 0, 0, getTextColor());
 		OpenGL.glColorRGB(getTextColor());
-		drawString(this.text, Area.abs(0, 0, 0, 0), Align.CENTER, VerticalAlign.MIDDLE, false);
+		final String text = this.text;
+		if (text!=null)
+			drawString(text, Area.abs(0, 0, 0, 0), Align.CENTER, VerticalAlign.MIDDLE, false);
 		glPopMatrix();
 	}
 }
