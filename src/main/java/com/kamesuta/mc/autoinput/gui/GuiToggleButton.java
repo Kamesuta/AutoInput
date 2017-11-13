@@ -1,6 +1,6 @@
-package com.kamesuta.mc.autoinput.guiparts;
+package com.kamesuta.mc.autoinput.gui;
 
-import com.kamesuta.mc.autoinput.GuiKeyBinding;
+import com.kamesuta.mc.autoinput.AutoInputKey;
 import com.kamesuta.mc.autoinput.bnnwidget.WEvent;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Area;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Point;
@@ -9,11 +9,11 @@ import com.kamesuta.mc.autoinput.reference.Names;
 
 import net.minecraft.client.resources.I18n;
 
-public class ToggleButton extends Button {
+public class GuiToggleButton extends GuiButton {
 
-	private final GuiKeyBinding keyBinding;
+	private final AutoInputKey keyBinding;
 
-	public ToggleButton(final R position, final GuiKeyBinding keyBinding) {
+	public GuiToggleButton(final R position, final AutoInputKey keyBinding) {
 		super(position);
 		this.keyBinding = keyBinding;
 		setText(keyBinding.getMode() ? I18n.format(Names.Gui.SIWTCH_1) : I18n.format(Names.Gui.SIWTCH_2));

@@ -1,9 +1,8 @@
-package com.kamesuta.mc.autoinput.handler;
+package com.kamesuta.mc.autoinput;
 
 import org.lwjgl.input.Keyboard;
 
-import com.kamesuta.mc.autoinput.GuiAutoInput;
-import com.kamesuta.mc.autoinput.GuiKeyBinding;
+import com.kamesuta.mc.autoinput.gui.GuiAutoInput;
 import com.kamesuta.mc.autoinput.reference.Names;
 
 import net.minecraft.client.Minecraft;
@@ -18,9 +17,17 @@ public class InputHandler {
 	private static final KeyBinding KEY_BINDING_TOGGLE = new KeyBinding(Names.Keys.TOGGLE, Keyboard.KEY_K, Names.Keys.CATEGORY);
 
 	public static final KeyBinding[] KEY_BINDINGS = new KeyBinding[] { KEY_BINDING_GUI, KEY_BINDING_TOGGLE };
-	public static boolean keyInput;
+	public boolean keyInput;
 
 	private InputHandler() {
+	}
+
+	public boolean isKeyInput() {
+		return this.keyInput;
+	}
+
+	public void setKeyInput(final boolean keyInput) {
+		this.keyInput = keyInput;
 	}
 
 	@SubscribeEvent
@@ -29,18 +36,18 @@ public class InputHandler {
 			Minecraft.getMinecraft().displayGuiScreen(new GuiAutoInput());
 
 		if (KEY_BINDING_TOGGLE.isPressed()&Minecraft.getMinecraft().currentScreen==null) {
-			for (final GuiKeyBinding binding : GuiAutoInput.keys) {
+			for (final AutoInputKey binding : GuiAutoInput.keys) {
 				final int code = binding.getKeyCode();
 				if (code!=0)
 					if (binding.getMode()) {
-						if (keyInput)
-							ClientTickHandler.tickKeys.remove(code);
+						if (this.keyInput)
+							ClientHandler.INSTANCE.tickKeys.remove(code);
 						else
-							ClientTickHandler.tickKeys.add(code);
+							ClientHandler.INSTANCE.tickKeys.add(code);
 					} else
-						KeyBinding.setKeyBindState(code, !keyInput);
+						KeyBinding.setKeyBindState(code, !this.keyInput);
 			}
-			keyInput = !keyInput;
+			this.keyInput = !this.keyInput;
 		}
 	}
 }

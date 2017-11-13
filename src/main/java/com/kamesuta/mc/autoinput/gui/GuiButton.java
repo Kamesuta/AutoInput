@@ -1,4 +1,4 @@
-package com.kamesuta.mc.autoinput.guiparts;
+package com.kamesuta.mc.autoinput.gui;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -13,11 +13,11 @@ import com.kamesuta.mc.autoinput.bnnwidget.render.OpenGL;
 import com.kamesuta.mc.autoinput.bnnwidget.render.RenderOption;
 import com.kamesuta.mc.autoinput.bnnwidget.render.WRenderer;
 
-public class Button extends MButton {
+public class GuiButton extends MButton {
 
 	protected int textcolor = 0xffffff;
 
-	public Button(final R position) {
+	public GuiButton(final R position) {
 		super(position);
 	}
 

@@ -1,9 +1,9 @@
-package com.kamesuta.mc.autoinput.guiparts;
+package com.kamesuta.mc.autoinput.gui;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import com.kamesuta.mc.autoinput.GuiKeyBinding;
+import com.kamesuta.mc.autoinput.AutoInputKey;
 import com.kamesuta.mc.autoinput.bnnwidget.WEvent;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Area;
 import com.kamesuta.mc.autoinput.bnnwidget.position.Point;
@@ -13,17 +13,19 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 
 import net.minecraft.client.resources.I18n;
 
-public class KeyButton extends Button {
+public class GuiKeyButton extends GuiButton {
 
-	private final GuiKeyBinding keyBinding;
-	private final IGuiControllable controllable;
+	private final AutoInputKey keyBinding;
 	private boolean reception;
 
-	public KeyButton(final R position, final GuiKeyBinding keyBinding, final IGuiControllable controllable) {
+	public GuiKeyButton(final R position, final AutoInputKey keyBinding) {
 		super(position);
 		this.keyBinding = keyBinding;
-		this.controllable = controllable;
 		setText(getName(keyBinding.getKeyCode()));
+	}
+
+	public boolean isReception() {
+		return this.reception;
 	}
 
 	@Override
@@ -32,8 +34,7 @@ public class KeyButton extends Button {
 			this.keyBinding.setKeyCode(keycode==Keyboard.KEY_ESCAPE ? Keyboard.KEY_NONE : keycode);
 			setText(getName(keycode));
 			this.reception = false;
-			this.controllable.setControllable(null);
-			return true;
+
 		}
 		return false;
 	}
@@ -46,11 +47,9 @@ public class KeyButton extends Button {
 			this.keyBinding.setKeyCode(mouseButton);
 			setText(getName(mouseButton));
 			this.reception = false;
-			this.controllable.setControllable(null);
 		} else if (abs.pointInside(p)&&button==0) {
 			this.reception = true;
 			setText(ChatFormatting.WHITE+"> "+ChatFormatting.YELLOW+this.text+ChatFormatting.WHITE+" <");
-			this.controllable.setControllable(this);
 			return true;
 		}
 		return false;

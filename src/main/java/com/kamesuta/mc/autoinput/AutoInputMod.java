@@ -1,8 +1,5 @@
 package com.kamesuta.mc.autoinput;
 
-import com.kamesuta.mc.autoinput.handler.ClientTickHandler;
-import com.kamesuta.mc.autoinput.handler.GuiOpenHandler;
-import com.kamesuta.mc.autoinput.handler.InputHandler;
 import com.kamesuta.mc.autoinput.reference.Reference;
 
 import net.minecraft.client.settings.KeyBinding;
@@ -30,8 +27,7 @@ public class AutoInputMod {
 	@EventHandler
 	public void init(final FMLInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(InputHandler.INSTANCE);
-		MinecraftForge.EVENT_BUS.register(ClientTickHandler.INSTANCE);
-		MinecraftForge.EVENT_BUS.register(GuiOpenHandler.INSTANCE);
+		MinecraftForge.EVENT_BUS.register(ClientHandler.INSTANCE);
 	}
 
 }

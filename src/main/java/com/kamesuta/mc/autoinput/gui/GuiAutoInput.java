@@ -1,12 +1,12 @@
-package com.kamesuta.mc.autoinput;
+package com.kamesuta.mc.autoinput.gui;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.kamesuta.mc.autoinput.bnnwidget.WCommon;
+import com.google.common.collect.Lists;
+import com.kamesuta.mc.autoinput.AutoInputKey;
 import com.kamesuta.mc.autoinput.bnnwidget.WEvent;
 import com.kamesuta.mc.autoinput.bnnwidget.WFrame;
 import com.kamesuta.mc.autoinput.bnnwidget.WPanel;
@@ -18,36 +18,29 @@ import com.kamesuta.mc.autoinput.bnnwidget.position.R;
 import com.kamesuta.mc.autoinput.bnnwidget.render.OpenGL;
 import com.kamesuta.mc.autoinput.bnnwidget.render.RenderOption;
 import com.kamesuta.mc.autoinput.bnnwidget.render.WRenderer;
-import com.kamesuta.mc.autoinput.guiparts.Button;
-import com.kamesuta.mc.autoinput.guiparts.IGuiControllable;
-import com.kamesuta.mc.autoinput.guiparts.KeyButton;
-import com.kamesuta.mc.autoinput.guiparts.ToggleButton;
 import com.kamesuta.mc.autoinput.reference.Names;
 
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.init.SoundEvents;
 
-public class GuiAutoInput extends WFrame implements IGuiControllable {
+public class GuiAutoInput extends WFrame {
 
-	public static List<GuiKeyBinding> keys = new ArrayList<GuiKeyBinding>() {
+	public static List<AutoInputKey> keys = new ArrayList<AutoInputKey>() {
 		{
-			this.add(new GuiKeyBinding().setMode(true).setKeyCode(-99));
-			this.add(new GuiKeyBinding());
-			this.add(new GuiKeyBinding());
+			this.add(new AutoInputKey().setMode(true).setKeyCode(-99));
+			this.add(new AutoInputKey());
+			this.add(new AutoInputKey());
 		}
 	};
 
-	private WCommon gui;
+	private List<GuiKeyButton> buttons = Lists.newArrayList();
 
-	@Override
-	public void setControllable(final WCommon gui) {
-		this.gui = gui;
-	}
-
-	@Override
-	public boolean isControllable() {
-		return this.gui==null;
+	public boolean isAnyReception() {
+		for (final GuiKeyButton line : this.buttons)
+			if (line.isReception())
+				return true;
+		return false;
 	}
 
 	@Override
@@ -117,13 +110,15 @@ public class GuiAutoInput extends WFrame implements IGuiControllable {
 						}.setText(I18n.format(Names.Gui.SETTINGS)));
 
 						int t = 50;
-						for (final GuiKeyBinding binding : keys) {
-							add(new ToggleButton(new R(Coord.left(5), Coord.top(t), Coord.right(200/3+5), Coord.height(20)), binding));
-							add(new KeyButton(new R(Coord.left(200/3*2+5), Coord.top(t), Coord.right(5), Coord.height(20)), binding, GuiAutoInput.this));
+						for (final AutoInputKey binding : keys) {
+							add(new GuiToggleButton(new R(Coord.left(5), Coord.top(t), Coord.right(200/3+5), Coord.height(20)), binding));
+							final GuiKeyButton key = new GuiKeyButton(new R(Coord.left(200/3*2+5), Coord.top(t), Coord.right(5), Coord.height(20)), binding);
+							add(key);
+							GuiAutoInput.this.buttons.add(key);
 							t += 25;
 						}
 
-						add(new Button(new R(Coord.left(60), Coord.top(120), Coord.right(60), Coord.height(20))) {
+						add(new GuiButton(new R(Coord.left(60), Coord.top(120), Coord.right(60), Coord.height(20))) {
 
 							@Override
 							public boolean mouseClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
@@ -137,7 +132,7 @@ public class GuiAutoInput extends WFrame implements IGuiControllable {
 							}
 						}.setText(I18n.format(Names.Gui.OPTIONS)));
 
-						add(new Button(new R(Coord.left(70), Coord.top(145), Coord.right(70), Coord.height(20))) {
+						add(new GuiButton(new R(Coord.left(70), Coord.top(145), Coord.right(70), Coord.height(20))) {
 
 							@Override
 							public boolean mouseClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
@@ -156,15 +151,35 @@ public class GuiAutoInput extends WFrame implements IGuiControllable {
 	}
 
 	@Override
-	protected void sMouseClicked(final int x, final int y, final int button) throws IOException {
-		if (isControllable())
-			super.sMouseClicked(x, y, button);
+	protected boolean dispatchMouseClicked(final Area pgp, final Point p, final int button) {
+		for (final GuiKeyButton line : this.buttons)
+			if (line.isReception())
+				return line.mouseClicked(this.event, pgp, p, button);
+		return super.dispatchMouseClicked(pgp, p, button);
 	}
 
 	@Override
-	protected void sKeyTyped(final char c, final int keycode) {
-		if (isControllable())
-			super.sKeyTyped(c, keycode);
+	protected boolean dispatchKeyTyped(final Area pgp, final Point p, final char c, final int keycode) {
+		for (final GuiKeyButton line : this.buttons)
+			if (line.isReception())
+				return line.keyTyped(this.event, pgp, p, c, keycode);
+		return getContentPane().keyTyped(this.event, pgp, p, c, keycode);
+	}
+
+	@Override
+	protected void keyTyped(final char c, final int keycode) {
+		final Area gp = getAbsolute();
+		final Point p = getMouseAbsolute();
+		final boolean b = isAnyReception();
+		dispatchKeyTyped(gp, p, c, keycode);
+		if (!b)
+			sKeyTyped(c, keycode);
+	}
+
+	@Override
+	public void requestClose() {
+		if (!isAnyReception())
+			super.requestClose();
 	}
 
 	@Override

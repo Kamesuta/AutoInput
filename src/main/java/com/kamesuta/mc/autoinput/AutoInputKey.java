@@ -1,16 +1,16 @@
 package com.kamesuta.mc.autoinput;
 
-public class GuiKeyBinding {
+public class AutoInputKey {
 	private int keycode;
 	private boolean mode;
 
-	public GuiKeyBinding() {
+	public AutoInputKey() {
 	}
 
 	public int getKeyCode() {
 		return this.keycode;
 	}
-	public GuiKeyBinding setKeyCode(final int keycode) {
+	public AutoInputKey setKeyCode(final int keycode) {
 		this.keycode = keycode;
 		return this;
 	}
@@ -19,7 +19,7 @@ public class GuiKeyBinding {
 		return this.mode;
 	}
 
-	public GuiKeyBinding setMode(final boolean mode) {
+	public AutoInputKey setMode(final boolean mode) {
 		this.mode = mode;
 		return this;
 	}
