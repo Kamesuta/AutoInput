@@ -2,9 +2,9 @@ package com.kamesuta.mc.autoinput.gui;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.kamesuta.mc.autoinput.AutoInputKey;
 import com.kamesuta.mc.autoinput.bnnwidget.WEvent;
@@ -26,14 +26,10 @@ import net.minecraft.init.SoundEvents;
 
 public class GuiAutoInput extends WFrame {
 
-	public static List<AutoInputKey> keys = new ArrayList<AutoInputKey>() {
-		{
-			this.add(new AutoInputKey().setMode(true).setKeyCode(-99));
-			this.add(new AutoInputKey());
-			this.add(new AutoInputKey());
-		}
-	};
-
+	public static ImmutableList<AutoInputKey> keys = ImmutableList.of(
+			new AutoInputKey().setMode(true).setKeyCode(-99),
+			new AutoInputKey(),
+			new AutoInputKey());
 	private List<GuiKeyButton> buttons = Lists.newArrayList();
 
 	public boolean isAnyReception() {
