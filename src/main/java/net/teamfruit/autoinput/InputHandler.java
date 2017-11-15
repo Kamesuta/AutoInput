@@ -35,7 +35,7 @@ public class InputHandler {
 			Minecraft.getMinecraft().displayGuiScreen(new GuiAutoInput());
 
 		if (KEY_BINDING_TOGGLE.isPressed()&Minecraft.getMinecraft().currentScreen==null) {
-			for (final AutoInputKey binding : GuiAutoInput.keys) {
+			for (final AutoInputKey binding : KeyStore.INSTANCE.getKeys()) {
 				final int code = binding.getKeyCode();
 				if (code!=0)
 					if (binding.getMode()) {

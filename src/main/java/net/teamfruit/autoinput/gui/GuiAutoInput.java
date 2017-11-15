@@ -4,13 +4,13 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.init.SoundEvents;
 import net.teamfruit.autoinput.AutoInputKey;
+import net.teamfruit.autoinput.KeyStore;
 import net.teamfruit.autoinput.bnnwidget.WEvent;
 import net.teamfruit.autoinput.bnnwidget.WFrame;
 import net.teamfruit.autoinput.bnnwidget.WPanel;
@@ -26,10 +26,6 @@ import net.teamfruit.autoinput.reference.Names;
 
 public class GuiAutoInput extends WFrame {
 
-	public static ImmutableList<AutoInputKey> keys = ImmutableList.of(
-			new AutoInputKey().setMode(true).setKeyCode(-99),
-			new AutoInputKey(),
-			new AutoInputKey());
 	private List<GuiKeyButton> buttons = Lists.newArrayList();
 
 	public boolean isAnyReception() {
@@ -106,7 +102,7 @@ public class GuiAutoInput extends WFrame {
 						}.setText(I18n.format(Names.Gui.SETTINGS)));
 
 						int t = 50;
-						for (final AutoInputKey binding : keys) {
+						for (final AutoInputKey binding : KeyStore.INSTANCE.getKeys()) {
 							add(new GuiToggleButton(new R(Coord.left(5), Coord.top(t), Coord.right(200/3+5), Coord.height(20)), binding));
 							final GuiKeyButton key = new GuiKeyButton(new R(Coord.left(200/3*2+5), Coord.top(t), Coord.right(5), Coord.height(20)), binding);
 							add(key);

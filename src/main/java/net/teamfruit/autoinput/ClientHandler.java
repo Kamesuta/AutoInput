@@ -20,7 +20,6 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.teamfruit.autoinput.gui.GuiAutoInput;
 
 public class ClientHandler {
 	public static final ClientHandler INSTANCE = new ClientHandler();
@@ -67,7 +66,7 @@ public class ClientHandler {
 
 	public void onGuiClose() {
 		if (InputHandler.INSTANCE.isKeyInput())
-			for (final AutoInputKey binding : GuiAutoInput.keys)
+			for (final AutoInputKey binding : KeyStore.INSTANCE.getKeys())
 				if (!binding.getMode())
 					KeyBinding.setKeyBindState(binding.getKeyCode(), true);
 	}
