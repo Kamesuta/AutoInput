@@ -400,7 +400,7 @@ public class OpenGL {
 	}
 
 	public static void glVertex(final Vec3d vertex) {
-		GL11.glVertex3f((float) vertex.xCoord, (float) vertex.yCoord, (float) vertex.zCoord);
+		GL11.glVertex3f((float) vertex.x, (float) vertex.y, (float) vertex.z);
 	}
 
 	public static void glLineWidth(final float width) {

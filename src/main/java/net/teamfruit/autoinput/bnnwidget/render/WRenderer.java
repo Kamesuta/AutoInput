@@ -13,9 +13,9 @@ import com.google.common.collect.ImmutableMap.Builder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -42,7 +42,7 @@ public class WRenderer extends Gui {
 	 * <p>
 	 * 描画に使用します
 	 */
-	public static final @Nonnull VertexBuffer w = t.getBuffer();
+	public static final @Nonnull BufferBuilder w = t.getBuffer();
 
 	/**
 	 * テクスチャマネージャ
@@ -65,7 +65,7 @@ public class WRenderer extends Gui {
 	 * @return {@link Minecraft#fontRenderer}
 	 */
 	public static @Nonnull FontRenderer font() {
-		return mc.fontRendererObj;
+		return mc.fontRenderer;
 	}
 
 	/**
