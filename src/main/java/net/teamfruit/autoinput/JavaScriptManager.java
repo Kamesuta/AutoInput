@@ -5,6 +5,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
@@ -14,9 +17,19 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
+import org.apache.commons.io.IOUtils;
+
+import com.google.common.base.Charsets;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.ResourceLocation;
 
 public class JavaScriptManager {
 	public static final JavaScriptManager instance = new JavaScriptManager();
@@ -25,8 +38,16 @@ public class JavaScriptManager {
 	private final ScriptEngine javascript;
 	private final JFrame frame;
 
+	public PrintStream console;
+
 	public JavaScriptManager() {
-		this.manager = new ScriptEngineManager();
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException|InstantiationException|IllegalAccessException|UnsupportedLookAndFeelException e2) {
+			e2.printStackTrace();
+		}
+
+		this.manager = new ScriptEngineManager(ClassLoader.getSystemClassLoader());
 		this.javascript = this.manager.getEngineByName("JavaScript");
 		if (this.javascript==null) {
 			this.frame = new JFrame("JavaScript is not supported");
@@ -38,6 +59,9 @@ public class JavaScriptManager {
 		this.frame = new JFrame("JavaScript Editor");
 		final JPanel panel = new JPanel(new BorderLayout());
 		final JPanel buttons = new JPanel(new BorderLayout());
+		final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		splitPane.setResizeWeight(.5);
+
 		final JButton update = new JButton("Update");
 		final JButton keycode = new JButton("Keycode");
 
@@ -57,20 +81,32 @@ public class JavaScriptManager {
 		});
 
 		final JTextArea tarea = new JTextArea();
+		final JTextArea consolearea = new JTextArea();
+		consolearea.setEditable(false);
+		final OutputStream consoleout = new OutputStream() {
+			@Override
+			public void write(final int b) throws IOException {
+				consolearea.append(String.valueOf((char) b));
+			}
+		};
+		this.console = new PrintStream(consoleout);
+
 		update.addActionListener(e -> {
 			try {
-				this.javascript.eval(
-						"function type(code) {JavaScriptManager.instance.keyPress(code)};"
-								+"function press(code) {JavaScriptManager.instance.keyPress(code, true)}"
-								+"function release(code) {JavaScriptManager.instance.keyPress(code, false)};"
-								+"\n"
-								+tarea.getText());
+				final String js = IOUtils.toString(Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation("autoinput", "js/default.js")).getInputStream(), Charsets.UTF_8);
+				this.javascript.eval(js+"\n"+tarea.getText());
 				update.setText("Update ✓");
-			} catch (final ScriptException e1) {
+				consolearea.setText("");
+				this.console.println("Script Successfully Updated");
+			} catch (final ScriptException|IOException e1) {
 				update.setText("Update ✘");
+				this.console.println("Invalid Script");
+				e1.printStackTrace(this.console);
 			}
 		});
-		panel.add(tarea, BorderLayout.CENTER);
+		splitPane.add(new JScrollPane(tarea), JSplitPane.LEFT);
+		splitPane.add(new JScrollPane(consolearea), JSplitPane.RIGHT);
+		panel.add(splitPane, BorderLayout.CENTER);
 		buttons.add(update, BorderLayout.CENTER);
 		buttons.add(keycode, BorderLayout.EAST);
 		panel.add(buttons, BorderLayout.SOUTH);
@@ -100,11 +136,11 @@ public class JavaScriptManager {
 		}
 	}
 
-	public void onEnable() {
+	public void onToggle(final boolean keyInput) {
 		if (this.javascript instanceof Invocable) {
 			final Invocable invocable = (Invocable) this.javascript;
 			try {
-				invocable.invokeFunction("onEnable");
+				invocable.invokeFunction(keyInput ? "onEnable" : "onDisable");
 			} catch (NoSuchMethodException|ScriptException e) {
 			}
 		}

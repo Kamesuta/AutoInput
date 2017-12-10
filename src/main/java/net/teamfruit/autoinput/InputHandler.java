@@ -46,8 +46,8 @@ public class InputHandler {
 					} else
 						KeyBinding.setKeyBindState(code, !this.keyInput);
 			}
-			JavaScriptManager.instance.onEnable();
 			this.keyInput = !this.keyInput;
+			JavaScriptManager.instance.onToggle(this.keyInput);
 		}
 	}
 }

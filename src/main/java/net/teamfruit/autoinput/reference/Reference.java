@@ -4,9 +4,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Reference {
-	public static final String MODID = "autoinputmod";
-	public static final String NAME = "AutoInputMod";
-	public static final String VERSION = "2.1";
+	public static final String MODID = "intelliinput";
+	public static final String NAME = "IntelliInput for 1.12.1";
+	public static final String VERSION = "2.6";
+	//	public static final String MODID = "autoinputmod";
+	//	public static final String NAME = "AutoInputMod";
+	//	public static final String VERSION = "2.1";
 	public static final String FORGE = "10.13.4.1558";
 	public static final String MINECRAFT = "1.7.10";
 
