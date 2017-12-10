@@ -10,6 +10,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.init.SoundEvents;
 import net.teamfruit.autoinput.AutoInputKey;
+import net.teamfruit.autoinput.JavaScriptManager;
 import net.teamfruit.autoinput.KeyStore;
 import net.teamfruit.autoinput.bnnwidget.WEvent;
 import net.teamfruit.autoinput.bnnwidget.WFrame;
@@ -116,8 +117,7 @@ public class GuiAutoInput extends WFrame {
 							public boolean mouseClicked(final WEvent ev, final Area pgp, final Point p, final int button) {
 								final Area a = getGuiPosition(pgp);
 								if (a.pointInside(p)&&button==0) {
-									setTextColor(0xff5555);
-									setText(I18n.format(Names.Gui.NOTAVAIABLE));
+									JavaScriptManager.instance.enableGUI();
 									return true;
 								}
 								return false;

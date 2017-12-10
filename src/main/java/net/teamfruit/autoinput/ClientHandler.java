@@ -42,9 +42,10 @@ public class ClientHandler {
 	@SubscribeEvent
 	public void onClientTick(final TickEvent.ClientTickEvent event) {
 		if (event.phase==TickEvent.Phase.START&&InputHandler.INSTANCE.isKeyInput())
-			for (final Integer line : this.tickKeys)
+			for (final Integer line : this.tickKeys) {
 				KeyBinding.onTick(line);
-
+				JavaScriptManager.instance.onTick();
+			}
 	}
 
 	@SubscribeEvent
