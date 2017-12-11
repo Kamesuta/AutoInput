@@ -1,4 +1,3 @@
-var jsmanager = Java.type('net.teamfruit.autoinput.JavaScriptManager').instance;
 var console = jsmanager.console;
 function type(code) {jsmanager.keyPress(code)};
 function press(code) {jsmanager.keyPress(code, true)};
@@ -21,12 +20,21 @@ function release(code) {jsmanager.keyPress(code, false)};
   };
 
   var timeoutStack = 0;
+  /*
   function tryShutdown() {
     if (timeoutStack > 0) {
       return;
     }
     timer.cancel();
     phaser.forceTermination();
+  }
+  */
+
+  var allTask = [];
+  context.clearAll = function() {
+    allTask.forEach(function( elem, index, ary ){
+      elem();
+    });
   }
 
   context.setTimeout = function(fn, millis /* [, args...] */) {
@@ -48,14 +56,16 @@ function release(code) {jsmanager.keyPress(code, false)};
         print(e);
       } finally {
         onTaskFinished();
-        tryShutdown();
+        // tryShutdown();
       }
     }, millis);
 
-    return function() {
+    var cancelCall = function() {
       onTaskFinished();
       canceled = true;
     };
+    allTask.push(cancelCall);
+    return cancelCall;
   };
 
   context.clearTimeout = function(cancel) {
@@ -72,10 +82,12 @@ function release(code) {jsmanager.keyPress(code, false)};
       fn.apply(context, args);
     };
 
-    cancel = context.setTimeout(loop, delay);
-    return function() {
+    cancelCall = context.setTimeout(loop, delay);
+    var cancelCall = function() {
       cancel();
     };
+    allTask.push(cancelCall);
+    return cancelCall;
   };
 
   context.clearInterval = function(cancel) {
@@ -83,3 +95,7 @@ function release(code) {jsmanager.keyPress(code, false)};
   };
 
 })(this);
+
+function onDispose() {
+	clearAll();
+}

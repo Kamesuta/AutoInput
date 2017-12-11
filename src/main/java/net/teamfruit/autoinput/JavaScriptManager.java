@@ -9,10 +9,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
+import javax.script.Bindings;
 import javax.script.Invocable;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import javax.script.SimpleBindings;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,10 +25,13 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.text.DefaultCaret;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.Maps;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -35,10 +41,13 @@ public class JavaScriptManager {
 	public static final JavaScriptManager instance = new JavaScriptManager();
 
 	private final ScriptEngineManager manager;
-	private final ScriptEngine javascript;
+	private ScriptEngine javascript;
 	private final JFrame frame;
 
 	public PrintStream console;
+
+	private Bindings rootBindings;
+	private Bindings userBindings;
 
 	public JavaScriptManager() {
 		try {
@@ -75,13 +84,20 @@ public class JavaScriptManager {
 		keycode.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(final MouseEvent e) {
-				keycode.setText("Keycode: "+(e.getButton()-100));
+				int mousebutton = e.getButton()-101;
+				if (mousebutton==-98)
+					mousebutton = -99;
+				else if (mousebutton==-99)
+					mousebutton = -98;
+				keycode.setText("Keycode: "+mousebutton);
 				e.consume();
 			}
 		});
 
 		final JTextArea tarea = new JTextArea();
 		final JTextArea consolearea = new JTextArea();
+		final DefaultCaret caret = (DefaultCaret) consolearea.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		consolearea.setEditable(false);
 		final OutputStream consoleout = new OutputStream() {
 			@Override
@@ -91,16 +107,28 @@ public class JavaScriptManager {
 		};
 		this.console = new PrintStream(consoleout);
 
+		try {
+			final String js = IOUtils.toString(Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation("autoinput", "js/default.js")).getInputStream(), Charsets.UTF_8);
+			this.javascript.put("jsmanager", this);
+			this.javascript.eval(js);
+			this.rootBindings = this.javascript.getBindings(ScriptContext.ENGINE_SCOPE);
+		} catch (IOException|ScriptException e) {
+			e.printStackTrace();
+		}
 		update.addActionListener(e -> {
+			consolearea.setText("");
 			try {
-				final String js = IOUtils.toString(Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation("autoinput", "js/default.js")).getInputStream(), Charsets.UTF_8);
-				this.javascript.eval(js+"\n"+tarea.getText());
+				onDispose();
+				final Bindings bindings = new SimpleBindings(Maps.newHashMap(this.rootBindings));
+				this.javascript.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+				this.javascript.eval(tarea.getText());
 				update.setText("Update ✓");
-				consolearea.setText("");
 				this.console.println("Script Successfully Updated");
-			} catch (final ScriptException|IOException e1) {
+			} catch (final ScriptException e1) {
 				update.setText("Update ✘");
 				this.console.println("Invalid Script");
+				e1.printStackTrace(this.console);
+			} catch (final Exception e1) {
 				e1.printStackTrace(this.console);
 			}
 		});
@@ -114,8 +142,8 @@ public class JavaScriptManager {
 		this.frame.add(panel);
 	}
 
-	public void keyPress(final int key, final boolean state) {
-		KeyBinding.setKeyBindState(key, state);
+	public void keyPress(final int key, final boolean pressed) {
+		ClientHandler.INSTANCE.pressQueue.offer(Pair.of(key, !pressed));
 	}
 
 	public void keyPress(final int key) {
@@ -126,12 +154,26 @@ public class JavaScriptManager {
 		this.frame.setVisible(true);
 	}
 
+	public void onDispose() {
+		if (this.javascript instanceof Invocable) {
+			final Invocable invocable = (Invocable) this.javascript;
+			try {
+				invocable.invokeFunction("onDispose");
+			} catch (final NoSuchMethodException e) {
+			} catch (final Exception e) {
+				e.printStackTrace(this.console);
+			}
+		}
+	}
+
 	public void onTick() {
 		if (this.javascript instanceof Invocable) {
 			final Invocable invocable = (Invocable) this.javascript;
 			try {
 				invocable.invokeFunction("onTick");
-			} catch (NoSuchMethodException|ScriptException e) {
+			} catch (final NoSuchMethodException e) {
+			} catch (final Exception e) {
+				e.printStackTrace(this.console);
 			}
 		}
 	}
@@ -141,7 +183,9 @@ public class JavaScriptManager {
 			final Invocable invocable = (Invocable) this.javascript;
 			try {
 				invocable.invokeFunction(keyInput ? "onEnable" : "onDisable");
-			} catch (NoSuchMethodException|ScriptException e) {
+			} catch (final NoSuchMethodException e) {
+			} catch (final Exception e) {
+				e.printStackTrace(this.console);
 			}
 		}
 	}

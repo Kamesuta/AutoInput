@@ -1,8 +1,12 @@
 package net.teamfruit.autoinput;
 
+import java.util.Deque;
 import java.util.HashSet;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Queues;
 
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiDisconnected;
@@ -38,6 +42,7 @@ public class ClientHandler {
 	}
 
 	public final HashSet<Integer> tickKeys = new HashSet<Integer>();
+	public final Deque<Pair<Integer, Boolean>> pressQueue = Queues.newArrayDeque();
 
 	@SubscribeEvent
 	public void onClientTick(final TickEvent.ClientTickEvent event) {
@@ -46,6 +51,9 @@ public class ClientHandler {
 			if (InputHandler.INSTANCE.isKeyInput())
 				for (final Integer line : this.tickKeys)
 					KeyBinding.onTick(line);
+			Pair<Integer, Boolean> press;
+			while ((press = this.pressQueue.poll())!=null)
+				KeyBinding.setKeyBindState(press.getLeft(), press.getRight());
 		}
 	}
 
